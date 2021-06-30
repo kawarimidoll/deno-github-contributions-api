@@ -1,0 +1,18 @@
+allow:
+  - write=app.log
+  # - read=.env,.env.example,.env.defaults
+  # - env
+  # - net
+
+scripts:
+  start:
+    desc: Runs main script
+    cmd: main.ts
+  # test: deno test
+  lint: deno lint
+  format: deno fmt
+  pre-commit:
+    cmd:
+      - vr lint
+      - vr format
+    gitHook: pre-commit
