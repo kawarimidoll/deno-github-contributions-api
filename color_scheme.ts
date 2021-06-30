@@ -1,4 +1,4 @@
-import { ContributionLevelName } from './types.ts'
+import { ContributionLevelName } from "./types.ts";
 
 // https://lab.syncer.jp/Web/JavaScript/Snippet/61/
 const hexToRgb = (hex: string) => {

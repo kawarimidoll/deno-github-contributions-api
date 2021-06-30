@@ -1,8 +1,8 @@
 allow:
   - write=app.log
-  # - read=.env,.env.example,.env.defaults
-  # - env
-  # - net
+  - read=.env,.env.example,.env.defaults
+  - env
+  - net
 
 scripts:
   start:

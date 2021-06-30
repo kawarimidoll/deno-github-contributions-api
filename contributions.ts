@@ -1,11 +1,13 @@
 import { ky, rgb24 } from "./deps.ts";
-import { GITHUB_READ_USER_TOKEN } from "./env.ts";
 import { ContributionDay } from "./types.ts";
 import { getColorScheme } from "./color_scheme.ts";
 
-const userName = "kawarimidoll";
+const contributions = async (userName: string, token: string) => {
+  if (!userName || !token) {
+    throw new Error("Missing required arguments");
+  }
 
-const query = `
+  const query = `
  query($userName:String!) {
    user(login: $userName){
      contributionsCollection {
@@ -24,42 +26,38 @@ const query = `
    }
  }
  `;
-const variables = `
+  const variables = `
  {
    "userName": "${userName}"
  }
  `;
 
-const url = "https://api.github.com/graphql";
+  const json = { query, variables };
+  const url = "https://api.github.com/graphql";
+  const { data } = await ky.post(url, {
+    headers: { Authorization: `Bearer ${token}` },
+    json,
+  }).json();
 
-const json = { query, variables };
+  const { weeks, totalContributions }: {
+    weeks: { contributionDays: ContributionDay[] }[];
+    totalContributions: number;
+  } = data?.user?.contributionsCollection
+    ?.contributionCalendar;
 
-const { data } = await ky.post(url, {
-  headers: { Authorization: `Bearer ${GITHUB_READ_USER_TOKEN}` },
-  json,
-}).json();
+  if (!weeks || !totalContributions) {
+    throw new Error("Could not get contributions data");
+  }
 
-const { weeks, totalContributions }: {
-  weeks: { contributionDays: ContributionDay[] }[];
-  totalContributions: number;
-} = data?.user?.contributionsCollection
-  ?.contributionCalendar;
+  console.log(totalContributions + " contributions in the last year");
 
-if (!weeks || !totalContributions) {
-  throw new Error("Could not get contributions data");
-}
+  const colorScheme = getColorScheme();
+  const grass = (day?: ContributionDay) =>
+    day?.color ? rgb24("■", colorScheme(day?.contributionLevel)) : "";
 
-console.log(totalContributions + " contributions in the last year");
+  return weeks[0].contributionDays.map((_, i) =>
+    weeks.map((row) => grass(row.contributionDays[i])).join("")
+  ).join("\n");
+};
 
-// console.log(weeks[weeks.length - 1]);
-// console.log(weeks.slice(weeks.length - 7));
-
-const colorScheme = getColorScheme();
-const grass = (day?: ContributionDay) =>
-  day?.color ? rgb24("■", colorScheme(day?.contributionLevel)) : "";
-
-weeks[0].contributionDays.forEach((_, i) => {
-  console.log(
-    weeks.map((row) => grass(row.contributionDays[i])).join(""),
-  );
-});
+export { contributions };

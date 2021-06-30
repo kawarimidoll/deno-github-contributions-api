@@ -1,6 +1,4 @@
-import { Logger } from "./logger.ts";
+import { contributions } from "./contributions.ts";
+import { GITHUB_READ_USER_TOKEN } from "./env.ts";
 
-Logger.debug("This log is debug!");
-Logger.info("This log is info!");
-Logger.warning("This log is warning!");
-Logger.error("This log is error!");
+console.log(await contributions("kawarimidoll", GITHUB_READ_USER_TOKEN));
