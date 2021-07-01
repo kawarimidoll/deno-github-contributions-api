@@ -1,8 +1,10 @@
 allow:
   - write=app.log
-  - read=.env,.env.example,.env.defaults
+  - read=.env
   - env
   - net
+envFile:
+  - .env
 
 scripts:
   start:
@@ -10,7 +12,7 @@ scripts:
     cmd: main.ts
   dev:
     desc: Starts local server
-    cmd: deployctl run --watch ./server.ts
+    cmd: deployctl run --watch --env=.env ./server.ts
   test: deno test
   lint: deno lint
   fmt: deno fmt

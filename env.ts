@@ -1,7 +1,7 @@
-import { config } from "https://deno.land/x/dotenv@v2.0.0/mod.ts";
+const GITHUB_READ_USER_TOKEN = Deno.env.get("GITHUB_READ_USER_TOKEN") ?? "";
 
-const {
-  GITHUB_READ_USER_TOKEN,
-} = config({ safe: true });
+if (!GITHUB_READ_USER_TOKEN) {
+  throw new Error("No token!");
+}
 
 export { GITHUB_READ_USER_TOKEN };
