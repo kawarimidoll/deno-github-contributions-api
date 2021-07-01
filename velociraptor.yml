@@ -8,6 +8,9 @@ scripts:
   start:
     desc: Runs main script
     cmd: main.ts
+  dev:
+    desc: Starts local server
+    cmd: deployctl run --watch ./server.ts
   test: deno test
   lint: deno lint
   fmt: deno fmt
