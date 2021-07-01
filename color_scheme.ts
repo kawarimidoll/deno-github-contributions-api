@@ -30,6 +30,8 @@ const COLOR_SCHEMES: { [key: string]: string[] } = {
   moon: ["#6bcdff", "#00a1f3", "#48009a", "#4f2266"],
   psychedelic: ["#faafe1", "#fb6dcc", "#fa3fbc", "#ff00ab"],
   yellow: ["#d7d7a2", "#d4d462", "#e0e03f", "#ffff00"],
+
+  gameboy: ["#ccdc5f", "#91a633", "#606520", "#2c370b"],
 };
 export type ColorSchemeName = keyof typeof COLOR_SCHEMES;
 
