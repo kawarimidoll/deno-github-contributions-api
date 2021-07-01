@@ -1,12 +1,21 @@
+import h from "./tag.ts";
+
 function handleRequest(request: Request) {
   const { pathname, searchParams } = new URL(request.url);
-  console.log({ pathname, searchParams });
+  // console.log({ pathname, searchParams });
 
   if (pathname === "/") {
-    const html = `<html>
-    <p>Welcome to deno-github-contributions-api!</p>
-    <p>Access to /[username] to get your contributions graph</p>
-    </html>`;
+    const html = h(
+      "html",
+      {},
+      h("head", {}, h("title", {}, "deno-github-contributions-api")),
+      h(
+        "body",
+        {},
+        h("p", {}, "Welcome to deno-github-contributions-api!"),
+        h("p", {}, "Access to /[username] to get your contributions graph"),
+      ),
+    );
     return new Response(html, {
       headers: { "content-type": "text/html; charset=utf-8" },
     });

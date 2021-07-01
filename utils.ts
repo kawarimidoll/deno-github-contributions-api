@@ -1,5 +1,5 @@
 const confirmHex = (str: string) =>
-  str.match(/^#?[0-9A-Fa-f]{3}([0-9A-Fa-f]{3})?$/) ? str : "000";
+  /^#?[0-9A-Fa-f]{3}([0-9A-Fa-f]{3})?$/.test(str) ? str : "000";
 
 const convertToSixChars = (str: string) =>
   confirmHex(str).replace(
