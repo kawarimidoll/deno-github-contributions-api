@@ -1,8 +1,16 @@
 import { ky, rgb24 } from "./deps.ts";
-import { ContributionDay } from "./types.ts";
+import { ColorSchemeName, ContributionDay } from "./types.ts";
 import { getColorScheme } from "./color_scheme.ts";
 
-const contributions = async (userName: string, token: string) => {
+const contributions = async (
+  userName: string,
+  token: string,
+  options: {
+    total?: boolean;
+    legend?: boolean;
+    scheme?: ColorSchemeName | "random";
+  },
+) => {
   if (!userName || !token) {
     throw new Error("Missing required arguments");
   }
@@ -49,15 +57,26 @@ const contributions = async (userName: string, token: string) => {
     throw new Error("Could not get contributions data");
   }
 
-  console.log(totalContributions + " contributions in the last year");
+  const colorScheme = getColorScheme(options.scheme);
 
-  const colorScheme = getColorScheme();
+  const total = (options.total ?? true)
+    ? totalContributions + " contributions in the last year\n"
+    : "";
+  const legend = (options.legend ?? true)
+    ? "\n Less " + colorScheme.colors.map((color) =>
+      rgb24("■", color)
+    ).join("") + " More"
+    : "";
+
   const grass = (day?: ContributionDay) =>
-    day?.color ? rgb24("■", colorScheme(day?.contributionLevel)) : "";
+    day?.contributionLevel
+      ? rgb24("■", colorScheme.getByLevel(day?.contributionLevel))
+      : "";
 
-  return weeks[0].contributionDays.map((_, i) =>
-    weeks.map((row) => grass(row.contributionDays[i])).join("")
-  ).join("\n");
+  return total +
+    weeks[0].contributionDays.map((_, i) =>
+      weeks.map((row) => grass(row.contributionDays[i])).join("")
+    ).join("\n") + legend;
 };
 
 export { contributions };

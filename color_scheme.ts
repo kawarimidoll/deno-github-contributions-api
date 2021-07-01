@@ -1,21 +1,5 @@
-import { ColorSchemeName, ContributionLevelName } from "./types.ts";
+import { ColorSchemeName, ContributionLevelName } from "./types.ts"; // [williambelle/github-contribution-color-graph: Change colors of contribution graph in GitHub.](https://github.com/williambelle/github-contribution-color-graph)
 
-// https://lab.syncer.jp/Web/JavaScript/Snippet/61/
-const hexToRgb = (hex: string) => {
-  if (hex.slice(0, 1) == "#") hex = hex.slice(1);
-  if (hex.length == 3) {
-    hex = hex.slice(0, 1) + hex.slice(0, 1) + hex.slice(1, 2) +
-      hex.slice(1, 2) + hex.slice(2, 3) + hex.slice(2, 3);
-  }
-
-  const r = parseInt("0x" + hex.slice(0, 2));
-  const g = parseInt("0x" + hex.slice(2, 4));
-  const b = parseInt("0x" + hex.slice(4, 6));
-
-  return { r, g, b };
-};
-
-// [williambelle/github-contribution-color-graph: Change colors of contribution graph in GitHub.](https://github.com/williambelle/github-contribution-color-graph)
 const colorSchemes: { [key in ColorSchemeName]: string[] } = {
   github: ["#9be9a8", "#40c463", "#30a14e", "#216e39"],
   halloween: ["#fdf156", "#ffc722", "#ff9711", "#04001b"],
@@ -54,26 +38,36 @@ const randomColorScheme = () => {
 };
 
 const getColorScheme = (name?: ColorSchemeName | "random") => {
-  const colors = (name === "random")
-    ? randomColorScheme()
-    : colorSchemes[name ?? "github"];
+  const colors = [
+    baseColor,
+    ...(name === "random"
+      ? randomColorScheme()
+      : colorSchemes[name ?? "github"]),
+  ].map((color) =>
+    parseInt(
+      color.replace(/^#?/, "0x").replace(
+        /.*/,
+        (hex) => (hex.length == 3) ? hex.replace(/./g, "$&$&") : hex,
+      ),
+    )
+  );
 
-  const level = (levelName?: ContributionLevelName) => {
+  const getByLevel = (levelName?: ContributionLevelName) => {
     switch (levelName) {
       case "FIRST_QUARTILE":
-        return hexToRgb(colors[0]);
+        return colors[1];
       case "SECOND_QUARTILE":
-        return hexToRgb(colors[1]);
+        return colors[2];
       case "THIRD_QUARTILE":
-        return hexToRgb(colors[2]);
+        return colors[3];
       case "FOURTH_QUARTILE":
-        return hexToRgb(colors[3]);
+        return colors[4];
     }
     // case "NONE" or undefined
-    return hexToRgb(baseColor);
+    return colors[0];
   };
 
-  return level;
+  return { colors, getByLevel };
 };
 
 export { getColorScheme };
