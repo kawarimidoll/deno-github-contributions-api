@@ -10,13 +10,13 @@ scripts:
     cmd: main.ts
   test: deno test
   lint: deno lint
-  format: deno fmt
+  fmt: deno fmt
   ci:
     - vr lint
-    - vr format --check
+    - vr fmt --check
     - vr test
   pre-commit:
     cmd:
       - vr lint
-      - vr format
+      - vr fmt
     gitHook: pre-commit
