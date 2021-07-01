@@ -1,6 +1,8 @@
-import { ColorSchemeName, ContributionLevelName } from "./types.ts"; // [williambelle/github-contribution-color-graph: Change colors of contribution graph in GitHub.](https://github.com/williambelle/github-contribution-color-graph)
+import { hexToRgbNum } from "./utils.ts";
+import { ContributionLevelName } from "./types.ts";
 
-const colorSchemes: { [key in ColorSchemeName]: string[] } = {
+// [williambelle/github-contribution-color-graph: Change colors of contribution graph in GitHub.](https://github.com/williambelle/github-contribution-color-graph)
+const COLOR_SCHEMES: { [key: string]: string[] } = {
   github: ["#9be9a8", "#40c463", "#30a14e", "#216e39"],
   halloween: ["#fdf156", "#ffc722", "#ff9711", "#04001b"],
   amber: ["#ffecb3", "#ffd54f", "#ffb300", "#ff6f00"],
@@ -29,12 +31,13 @@ const colorSchemes: { [key in ColorSchemeName]: string[] } = {
   psychedelic: ["#faafe1", "#fb6dcc", "#fa3fbc", "#ff00ab"],
   yellow: ["#d7d7a2", "#d4d462", "#e0e03f", "#ffff00"],
 };
+export type ColorSchemeName = keyof typeof COLOR_SCHEMES;
 
 const baseColor = "#eeeeee";
 
 const randomColorScheme = () => {
-  const values = Object.values(colorSchemes);
-  return values[Math.floor(Math.random() * values.length)];
+  const values = Object.values(COLOR_SCHEMES);
+  return values[(Math.random() * values.length) << 0];
 };
 
 const getColorScheme = (name?: ColorSchemeName | "random") => {
@@ -42,15 +45,8 @@ const getColorScheme = (name?: ColorSchemeName | "random") => {
     baseColor,
     ...(name === "random"
       ? randomColorScheme()
-      : colorSchemes[name ?? "github"]),
-  ].map((color) =>
-    parseInt(
-      color.replace(/^#?/, "0x").replace(
-        /.*/,
-        (hex) => (hex.length == 3) ? hex.replace(/./g, "$&$&") : hex,
-      ),
-    )
-  );
+      : COLOR_SCHEMES[name ?? "github"]),
+  ].map((color) => hexToRgbNum(color));
 
   const getByLevel = (levelName?: ContributionLevelName) => {
     switch (levelName) {
@@ -70,4 +66,4 @@ const getColorScheme = (name?: ColorSchemeName | "random") => {
   return { colors, getByLevel };
 };
 
-export { getColorScheme };
+export { COLOR_SCHEMES, getColorScheme };
