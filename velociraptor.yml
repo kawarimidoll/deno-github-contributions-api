@@ -8,9 +8,13 @@ scripts:
   start:
     desc: Runs main script
     cmd: main.ts
-  # test: deno test
+  test: deno test
   lint: deno lint
   format: deno fmt
+  ci:
+    - vr lint
+    - vr format --check
+    - vr test
   pre-commit:
     cmd:
       - vr lint
