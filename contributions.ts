@@ -76,7 +76,7 @@ const contributions = async (
   return total +
     weeks[0].contributionDays.map((_, i) =>
       weeks.map((row) => grass(row.contributionDays[i])).join("")
-    ).join("\n") + legend;
+    ).join("\n") + legend + "\n";
 };
 
 export { contributions };

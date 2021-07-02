@@ -1,6 +1,8 @@
+import { contributions } from "./contributions.ts";
+import { GITHUB_READ_USER_TOKEN } from "./env.ts";
 import h from "./tag.ts";
 
-function handleRequest(request: Request) {
+async function handleRequest(request: Request) {
   const { pathname, searchParams } = new URL(request.url);
   // console.log({ pathname, searchParams });
 
@@ -30,7 +32,12 @@ function handleRequest(request: Request) {
   }
 
   if (searchParams.get("type") === "text") {
-    return new Response(message, {
+    const graph = await contributions("kawarimidoll", GITHUB_READ_USER_TOKEN, {
+      scheme: searchParams.get("scheme") ?? "",
+      total: searchParams.get("total") != "none",
+      legend: searchParams.get("legend") != "none",
+    });
+    return new Response(graph, {
       headers: { "content-type": "text/plain; charset=utf-8" },
     });
   }
