@@ -1,7 +1,9 @@
-const GITHUB_READ_USER_TOKEN = Deno.env.get("GITHUB_READ_USER_TOKEN") ?? "";
+export default function (envName: string) {
+  const envValue = Deno.env.get(envName);
 
-if (!GITHUB_READ_USER_TOKEN) {
-  throw new Error("No token!");
+  if (!envValue) {
+    throw new Error(`No token: ${envName}`);
+  }
+
+  return envValue;
 }
-
-export { GITHUB_READ_USER_TOKEN };

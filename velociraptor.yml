@@ -1,6 +1,6 @@
 allow:
-  - write=app.log
-  - read=.env
+  # - write=app.log
+  # - read=.env
   - env
   - net
 envFile:
