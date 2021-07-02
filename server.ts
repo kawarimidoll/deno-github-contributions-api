@@ -1,9 +1,11 @@
 import { contributions } from "./contributions.ts";
 import env from "./env.ts";
 import h from "./tag.ts";
+import { Svg } from "./svg.ts";
+import { getColorScheme } from "./color_scheme.ts";
 
 async function handleRequest(request: Request) {
-  const { pathname, searchParams } = new URL(request.url);
+  const { pathname, searchParams, host } = new URL(request.url);
   // console.log({ pathname, searchParams });
 
   if (pathname === "/") {
@@ -15,7 +17,11 @@ async function handleRequest(request: Request) {
         "body",
         {},
         h("p", {}, "Welcome to deno-github-contributions-api!"),
-        h("p", {}, "Access to /[username] to get your contributions graph"),
+        h(
+          "p",
+          {},
+          `Access to ${host}/[username] to get your contributions graph`,
+        ),
       ),
     );
     return new Response(html, {
@@ -46,13 +52,7 @@ async function handleRequest(request: Request) {
     });
   }
 
-  const width = 100;
-  const height = 100;
-  const svg = h(
-    "svg",
-    { width, height, xmlns: "http://www.w3.org/2000/svg", id: "graph" },
-    h("rect", { width, height, fill: "#a63" }),
-  );
+  const svg = Svg.render([], getColorScheme().hexColors);
   return new Response(svg, {
     headers: { "content-type": "image/svg+xml; charset=utf-8" },
   });
