@@ -47,8 +47,9 @@ const getColorScheme = (name?: ColorSchemeName | "random") => {
     baseColor,
     ...(name === "random"
       ? randomColorScheme()
-      : COLOR_SCHEMES[name ?? "github"]),
+      : COLOR_SCHEMES[name || "github"]),
   ];
+
   const colors = hexColors.map((color) => hexToRgbNum(color));
 
   const getByLevel = (levelName?: ContributionLevelName) => {
