@@ -43,12 +43,13 @@ const randomColorScheme = () => {
 };
 
 const getColorScheme = (name?: ColorSchemeName | "random") => {
-  const colors = [
+  const hexColors = [
     baseColor,
     ...(name === "random"
       ? randomColorScheme()
       : COLOR_SCHEMES[name ?? "github"]),
-  ].map((color) => hexToRgbNum(color));
+  ];
+  const colors = hexColors.map((color) => hexToRgbNum(color));
 
   const getByLevel = (levelName?: ContributionLevelName) => {
     switch (levelName) {
@@ -65,7 +66,7 @@ const getColorScheme = (name?: ColorSchemeName | "random") => {
     return colors[0];
   };
 
-  return { colors, getByLevel };
+  return { hexColors, colors, getByLevel };
 };
 
 export { COLOR_SCHEMES, getColorScheme };
