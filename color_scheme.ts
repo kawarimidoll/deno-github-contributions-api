@@ -50,12 +50,18 @@ const contributionLevelsMap = {
   FOURTH_QUARTILE: 4,
 };
 
-const getColorScheme = (name?: ColorSchemeName | "random") => {
+const getColorScheme = (name = "github") => {
+  if (name != "random" && !COLOR_SCHEMES[name]) {
+    throw new Error(
+      `'${name}' is invalid color scheme name! Choose from: ${
+        Object.keys(COLOR_SCHEMES)
+      },random`,
+    );
+  }
+
   const hexColors = [
     baseColor,
-    ...(name === "random"
-      ? randomColorScheme()
-      : COLOR_SCHEMES[name || "github"]),
+    ...(name === "random" ? randomColorScheme() : COLOR_SCHEMES[name]),
   ];
 
   const colors = hexColors.map((color) => hexToRgbNum(color));

@@ -6,5 +6,5 @@ const contributions = await getContributions(
   env("GITHUB_READ_USER_TOKEN"),
 );
 // console.log(contributions.toJson());
-console.log(contributions.toTerm({ scheme: "grey" }));
+console.log(contributions.toTerm({ scheme: "unicorn" }));
 console.log(contributions.toText());
