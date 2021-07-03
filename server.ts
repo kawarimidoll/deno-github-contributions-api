@@ -1,3 +1,5 @@
+/// <reference path="./deploy.d.ts" />
+
 import { getContributions } from "./contributions.ts";
 import env from "./env.ts";
 
