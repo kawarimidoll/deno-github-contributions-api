@@ -2,6 +2,11 @@ import { ky, rgb24 } from "./deps.ts";
 import { ContributionDay } from "./types.ts";
 import { getColorScheme } from "./color_scheme.ts";
 
+// deno-lint-ignore no-explicit-any
+const hasOwnProperty = (obj: { [key: string]: any }, key: string): boolean => {
+  return !!(obj) && Object.prototype.hasOwnProperty.call(obj, key);
+};
+
 const getContributions = async (
   userName: string,
   token: string,
@@ -42,15 +47,20 @@ const getContributions = async (
     json,
   }).json();
 
+  const contributionCalendar = data?.user?.contributionsCollection
+    ?.contributionCalendar;
+
+  if (
+    !contributionCalendar || !hasOwnProperty(contributionCalendar, "weeks") ||
+    !hasOwnProperty(contributionCalendar, "totalContributions")
+  ) {
+    throw new Error("Could not get contributions data");
+  }
+
   const { weeks, totalContributions }: {
     weeks: { contributionDays: ContributionDay[] }[];
     totalContributions: number;
-  } = data?.user?.contributionsCollection
-    ?.contributionCalendar;
-
-  if (!weeks || !totalContributions) {
-    throw new Error("Could not get contributions data");
-  }
+  } = contributionCalendar;
 
   const contributions = weeks.map((week) => week.contributionDays);
 
@@ -88,10 +98,13 @@ const getContributions = async (
 
     const total = !noTotal ? totalMsg : "";
 
+    // 15 is length of 'Less xxxxx More'
+    // `repeat()` can't be used because this string has color information
     const legend = !noLegend
-      ? " Less " + colorScheme.colors.map((color) =>
-        rgb24("■", color)
-      ).join("") + " More\n"
+      ? " ".repeat(contributions.length - 15) +
+        "Less " + colorScheme.colors.map((color) =>
+          rgb24("■", color)
+        ).join("") + " More\n"
       : "";
 
     const grass = (day?: ContributionDay) =>
