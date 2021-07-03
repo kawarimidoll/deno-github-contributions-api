@@ -42,6 +42,14 @@ const randomColorScheme = () => {
   return values[(Math.random() * values.length) << 0];
 };
 
+const contributionLevelsMap = {
+  NONE: 0,
+  FIRST_QUARTILE: 1,
+  SECOND_QUARTILE: 2,
+  THIRD_QUARTILE: 3,
+  FOURTH_QUARTILE: 4,
+};
+
 const getColorScheme = (name?: ColorSchemeName | "random") => {
   const hexColors = [
     baseColor,
@@ -52,20 +60,8 @@ const getColorScheme = (name?: ColorSchemeName | "random") => {
 
   const colors = hexColors.map((color) => hexToRgbNum(color));
 
-  const getByLevel = (levelName?: ContributionLevelName) => {
-    switch (levelName) {
-      case "FIRST_QUARTILE":
-        return colors[1];
-      case "SECOND_QUARTILE":
-        return colors[2];
-      case "THIRD_QUARTILE":
-        return colors[3];
-      case "FOURTH_QUARTILE":
-        return colors[4];
-    }
-    // case "NONE" or undefined
-    return colors[0];
-  };
+  const getByLevel = (levelName?: ContributionLevelName) =>
+    colors[contributionLevelsMap[levelName || "NONE"]];
 
   return { hexColors, colors, getByLevel };
 };

@@ -2,7 +2,7 @@ import { contributions } from "./contributions.ts";
 import env from "./env.ts";
 import h from "./tag.ts";
 import { Svg } from "./svg.ts";
-import { getColorScheme } from "./color_scheme.ts";
+import { COLOR_SCHEMES, getColorScheme } from "./color_scheme.ts";
 
 async function handleRequest(request: Request) {
   const { pathname, searchParams, host } = new URL(request.url);
@@ -38,11 +38,20 @@ async function handleRequest(request: Request) {
   }
 
   if (searchParams.get("type") === "text") {
+    const scheme = searchParams.get("scheme") ?? "github";
+    if (!COLOR_SCHEMES[scheme]) {
+      console.log("invalid color scheme name");
+
+      return new Response("invalid color scheme name", {
+        headers: { "content-type": "text/plain; charset=utf-8" },
+      });
+    }
+
     const graph = await contributions(
       "kawarimidoll",
       env("GITHUB_READ_USER_TOKEN"),
       {
-        scheme: searchParams.get("scheme") ?? "",
+        scheme,
         total: searchParams.get("total") != "none",
         legend: searchParams.get("legend") != "none",
       },
