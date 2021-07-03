@@ -1,11 +1,7 @@
 import { ky, rgb24 } from "./deps.ts";
 import { ContributionDay } from "./types.ts";
 import { getColorScheme } from "./color_scheme.ts";
-
-// deno-lint-ignore no-explicit-any
-const hasOwnProperty = (obj: { [key: string]: any }, key: string): boolean => {
-  return !!(obj) && Object.prototype.hasOwnProperty.call(obj, key);
-};
+import { hasOwnProperty } from "./utils.ts";
 
 const getContributions = async (
   userName: string,
@@ -102,7 +98,7 @@ const getContributions = async (
     // `repeat()` can't be used because this string has color information
     const legend = !noLegend
       ? " ".repeat(contributions.length - 15) +
-        "Less " + colorScheme.colors.map((color) =>
+        "Less " + colorScheme.hexNumColors.map((color) =>
           rgb24("■", color)
         ).join("") + " More\n"
       : "";
@@ -140,7 +136,14 @@ const getContributions = async (
       );
   };
 
-  return { toJson, toTerm, toText };
+  return {
+    contributions,
+    totalContributions,
+    maxContributionDay,
+    toJson,
+    toTerm,
+    toText,
+  };
 };
 
 export { getContributions };

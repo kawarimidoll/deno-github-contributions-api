@@ -2,8 +2,8 @@ import { assertEquals } from "./deps.ts";
 import {
   confirmHex,
   convertToSixChars,
-  hexToRgbNum,
-  hexToRgbObj,
+  hexStrToHexNum,
+  hexStrToRgbObj,
 } from "./utils.ts";
 
 Deno.test("confirmHex", () => {
@@ -27,15 +27,15 @@ Deno.test("convertToSixChars", () => {
 });
 
 Deno.test("hexToRgbObj", () => {
-  assertEquals(hexToRgbObj("#123456"), { r: 18, g: 52, b: 86 });
-  assertEquals(hexToRgbObj("123456"), { r: 18, g: 52, b: 86 });
-  assertEquals(hexToRgbObj("#12A"), { r: 17, g: 34, b: 170 });
-  assertEquals(hexToRgbObj("12A"), { r: 17, g: 34, b: 170 });
+  assertEquals(hexStrToRgbObj("#123456"), { r: 18, g: 52, b: 86 });
+  assertEquals(hexStrToRgbObj("123456"), { r: 18, g: 52, b: 86 });
+  assertEquals(hexStrToRgbObj("#12A"), { r: 17, g: 34, b: 170 });
+  assertEquals(hexStrToRgbObj("12A"), { r: 17, g: 34, b: 170 });
 });
 
 Deno.test("hexToRgbNum", () => {
-  assertEquals(hexToRgbNum("#123456"), 0x123456);
-  assertEquals(hexToRgbNum("123456"), 0x123456);
-  assertEquals(hexToRgbNum("#12A"), 0x1122aa);
-  assertEquals(hexToRgbNum("12A"), 0x1122aa);
+  assertEquals(hexStrToHexNum("#123456"), 0x123456);
+  assertEquals(hexStrToHexNum("123456"), 0x123456);
+  assertEquals(hexStrToHexNum("#12A"), 0x1122aa);
+  assertEquals(hexStrToHexNum("12A"), 0x1122aa);
 });
