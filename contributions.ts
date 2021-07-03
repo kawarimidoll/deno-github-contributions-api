@@ -62,17 +62,14 @@ const getContributions = async (
       moreContributedDay(
         max,
         week.reduce(
-          (maxInWeek, current) =>
-            moreContributedDay(
-              maxInWeek,
-              current,
-            ),
+          (maxInWeek, current) => moreContributedDay(maxInWeek, current),
           week[0],
         ),
       ),
     contributions[0][0],
   );
-  console.log(maxContributionDay);
+
+  const totalMsg = totalContributions + " contributions in the last year\n";
 
   const toJson = () =>
     JSON.stringify({
@@ -89,9 +86,7 @@ const getContributions = async (
   ) => {
     const colorScheme = getColorScheme(scheme);
 
-    const total = !noTotal
-      ? totalContributions + " contributions in the last year\n"
-      : "";
+    const total = !noTotal ? totalMsg : "";
 
     const legend = !noLegend
       ? " Less " + colorScheme.colors.map((color) =>
@@ -117,9 +112,7 @@ const getContributions = async (
       noTotal = false,
     } = {},
   ) => {
-    const total = !noTotal
-      ? totalContributions + " contributions in the last year\n"
-      : "";
+    const total = !noTotal ? totalMsg : "";
 
     const pad = String(maxContributionDay.contributionCount).length + 1;
 
@@ -127,7 +120,7 @@ const getContributions = async (
       contributions[0].reduce(
         (acc, _, i) =>
           acc + contributions.map((row) =>
-            `${row[i]?.contributionCount || ""}`.padStart(pad)
+            `${row[i]?.contributionCount ?? ""}`.padStart(pad)
           ).join("") +
           "\n",
         "",
