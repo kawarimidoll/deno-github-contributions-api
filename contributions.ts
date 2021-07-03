@@ -114,14 +114,14 @@ const getContributions = async (
   ) => {
     const total = !noTotal ? totalMsg : "";
 
-    const pad = String(maxContributionDay.contributionCount).length + 1;
+    const pad = String(maxContributionDay.contributionCount).length;
 
     return total +
       contributions[0].reduce(
         (acc, _, i) =>
           acc + contributions.map((row) =>
             `${row[i]?.contributionCount ?? ""}`.padStart(pad)
-          ).join("") +
+          ).join(",") +
           "\n",
         "",
       );
