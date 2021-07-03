@@ -1,7 +1,27 @@
 import { ky, rgb24 } from "./deps.ts";
-import { ContributionDay } from "./types.ts";
 import { getColorScheme } from "./color_scheme.ts";
 import { hasOwnProperty } from "./utils.ts";
+
+interface ContributionDay {
+  contributionCount: number;
+  contributionLevel: ContributionLevelName;
+  date: string;
+  color: string;
+}
+
+const CONTRIBUTION_LEVELS = {
+  NONE: 0,
+  FIRST_QUARTILE: 1,
+  SECOND_QUARTILE: 2,
+  THIRD_QUARTILE: 3,
+  FOURTH_QUARTILE: 4,
+};
+type ContributionLevelName = keyof typeof CONTRIBUTION_LEVELS;
+
+const isValidContributionLevelName = (
+  name?: string,
+): name is ContributionLevelName =>
+  !!name && hasOwnProperty(CONTRIBUTION_LEVELS, name);
 
 const getContributions = async (
   userName: string,
@@ -146,4 +166,5 @@ const getContributions = async (
   };
 };
 
-export { getContributions };
+export { CONTRIBUTION_LEVELS, getContributions, isValidContributionLevelName };
+export type { ContributionDay, ContributionLevelName };

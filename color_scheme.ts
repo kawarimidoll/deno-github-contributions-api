@@ -1,9 +1,12 @@
-import { hexStrToHexNum } from "./utils.ts";
-import { ContributionLevelName } from "./types.ts";
-import { hasOwnProperty } from "./utils.ts";
+import { hasOwnProperty, hexStrToHexNum } from "./utils.ts";
+import {
+  CONTRIBUTION_LEVELS,
+  ContributionLevelName,
+  isValidContributionLevelName,
+} from "./contributions.ts";
 
-// [williambelle/github-contribution-color-graph: Change colors of contribution graph in GitHub.](https://github.com/williambelle/github-contribution-color-graph)
-const COLOR_SCHEMES: { [key: string]: string[] } = {
+const COLOR_SCHEMES = {
+  // by [williambelle/github-contribution-color-graph](https://github.com/williambelle/github-contribution-color-graph)
   github: ["#eeeeee", "#9be9a8", "#40c463", "#30a14e", "#216e39"],
   halloween: ["#eeeeee", "#fdf156", "#ffc722", "#ff9711", "#04001b"],
   amber: ["#eeeeee", "#ffecb3", "#ffd54f", "#ffb300", "#ff6f00"],
@@ -32,25 +35,21 @@ const COLOR_SCHEMES: { [key: string]: string[] } = {
   psychedelic: ["#eeeeee", "#faafe1", "#fb6dcc", "#fa3fbc", "#ff00ab"],
   yellow: ["#eeeeee", "#d7d7a2", "#d4d462", "#e0e03f", "#ffff00"],
 
+  // by kawarimidoll
   gameboy: ["#eeeeee", "#ccdc5f", "#91a633", "#606520", "#2c370b"],
 };
-export type ColorSchemeName = keyof typeof COLOR_SCHEMES;
+type ColorSchemeName = keyof typeof COLOR_SCHEMES;
+
+const isValidColorSchemeName = (name?: string): name is ColorSchemeName =>
+  !!name && hasOwnProperty(COLOR_SCHEMES, name);
 
 const randomColorScheme = () => {
   const values = Object.values(COLOR_SCHEMES);
   return values[(Math.random() * values.length) << 0];
 };
 
-const contributionLevelsMap = {
-  NONE: 0,
-  FIRST_QUARTILE: 1,
-  SECOND_QUARTILE: 2,
-  THIRD_QUARTILE: 3,
-  FOURTH_QUARTILE: 4,
-};
-
 const getColorScheme = (name = "github") => {
-  if (name != "random" && !hasOwnProperty(COLOR_SCHEMES, name)) {
+  if (name != "random" && !isValidColorSchemeName(name)) {
     throw new Error(
       `'${name}' is invalid color scheme name! Choose from: ${
         Object.keys(COLOR_SCHEMES)
@@ -65,9 +64,14 @@ const getColorScheme = (name = "github") => {
   const hexNumColors = hexStrColors.map((color) => hexStrToHexNum(color));
 
   const getByLevel = (levelName?: ContributionLevelName) =>
-    hexNumColors[contributionLevelsMap[levelName || "NONE"]];
+    hexNumColors[
+      isValidContributionLevelName(levelName)
+        ? CONTRIBUTION_LEVELS[levelName]
+        : 0
+    ];
 
   return { hexStrColors, hexNumColors, getByLevel };
 };
 
 export { COLOR_SCHEMES, getColorScheme };
+export type { ColorSchemeName };
