@@ -77,6 +77,7 @@ addEventListener("fetch", async (event) => {
     event.respondWith(
       new Response(error + "\nPlease check your input\n", {
         headers: { "content-type": "text/plain; charset=utf-8" },
+        status: 400,
       }),
     );
   }
