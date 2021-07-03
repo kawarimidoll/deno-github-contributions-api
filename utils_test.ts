@@ -1,7 +1,8 @@
-import { assertEquals } from "./deps.ts";
+import { assert, assertEquals } from "./deps.ts";
 import {
   confirmHex,
   convertToSixChars,
+  hasOwnProperty,
   hexStrToHexNum,
   hexStrToRgbObj,
 } from "./utils.ts";
@@ -38,4 +39,10 @@ Deno.test("hexToRgbNum", () => {
   assertEquals(hexStrToHexNum("123456"), 0x123456);
   assertEquals(hexStrToHexNum("#12A"), 0x1122aa);
   assertEquals(hexStrToHexNum("12A"), 0x1122aa);
+});
+
+Deno.test("hasOwnProperty", () => {
+  const obj = { a: 1, b: 2, c: 3 };
+  assert(hasOwnProperty(obj, "a"));
+  assert(!hasOwnProperty(obj, "d"));
 });
