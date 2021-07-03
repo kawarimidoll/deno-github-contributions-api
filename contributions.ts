@@ -54,6 +54,26 @@ const getContributions = async (
 
   const contributions = weeks.map((week) => week.contributionDays);
 
+  const moreContributedDay = (a: ContributionDay, b: ContributionDay) =>
+    a.contributionCount > b.contributionCount ? a : b;
+
+  const maxContributionDay = contributions.reduce(
+    (max, week) =>
+      moreContributedDay(
+        max,
+        week.reduce(
+          (maxInWeek, current) =>
+            moreContributedDay(
+              maxInWeek,
+              current,
+            ),
+          week[0],
+        ),
+      ),
+    contributions[0][0],
+  );
+  console.log(maxContributionDay);
+
   const toJson = () =>
     JSON.stringify({
       contributions,
@@ -92,7 +112,29 @@ const getContributions = async (
       ) + legend;
   };
 
-  return { toJson, toTerm };
+  const toText = (
+    {
+      noTotal = false,
+    } = {},
+  ) => {
+    const total = !noTotal
+      ? totalContributions + " contributions in the last year\n"
+      : "";
+
+    const pad = String(maxContributionDay.contributionCount).length + 1;
+
+    return total +
+      contributions[0].reduce(
+        (acc, _, i) =>
+          acc + contributions.map((row) =>
+            `${row[i]?.contributionCount || ""}`.padStart(pad)
+          ).join("") +
+          "\n",
+        "",
+      );
+  };
+
+  return { toJson, toTerm, toText };
 };
 
 export { getContributions };
