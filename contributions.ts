@@ -1,15 +1,10 @@
 import { ky, rgb24 } from "./deps.ts";
-import { ColorSchemeName, ContributionDay } from "./types.ts";
+import { ContributionDay } from "./types.ts";
 import { getColorScheme } from "./color_scheme.ts";
 
-const contributions = async (
+const getContributions = async (
   userName: string,
   token: string,
-  options: {
-    total?: boolean;
-    legend?: boolean;
-    scheme?: ColorSchemeName | "random";
-  },
 ) => {
   if (!userName || !token) {
     throw new Error("Missing required arguments");
@@ -57,26 +52,45 @@ const contributions = async (
     throw new Error("Could not get contributions data");
   }
 
-  const colorScheme = getColorScheme(options.scheme);
+  const contributions = weeks.map((week) => week.contributionDays);
 
-  const total = (options.total ?? true)
-    ? totalContributions + " contributions in the last year\n"
-    : "";
-  const legend = (options.legend ?? true)
-    ? "\n Less " + colorScheme.colors.map((color) =>
-      rgb24("■", color)
-    ).join("") + " More"
-    : "";
+  const toJson = () =>
+    JSON.stringify({
+      contributions,
+      totalContributions,
+    });
 
-  const grass = (day?: ContributionDay) =>
-    day?.contributionLevel
-      ? rgb24("■", colorScheme.getByLevel(day?.contributionLevel))
+  const toTerm = (
+    {
+      noTotal = false,
+      noLegend = false,
+      scheme = "github",
+    } = {},
+  ) => {
+    const colorScheme = getColorScheme(scheme);
+
+    const total = !noTotal
+      ? totalContributions + " contributions in the last year\n"
       : "";
 
-  return total +
-    weeks[0].contributionDays.map((_, i) =>
-      weeks.map((row) => grass(row.contributionDays[i])).join("")
-    ).join("\n") + legend + "\n";
+    const legend = !noLegend
+      ? "\n Less " + colorScheme.colors.map((color) =>
+        rgb24("■", color)
+      ).join("") + " More"
+      : "";
+
+    const grass = (day?: ContributionDay) =>
+      day?.contributionLevel
+        ? rgb24("■", colorScheme.getByLevel(day?.contributionLevel))
+        : "";
+
+    return total +
+      contributions[0].map((_, i) =>
+        contributions.map((row) => grass(row[i])).join("")
+      ).join("\n") + legend + "\n";
+  };
+
+  return { toJson, toTerm };
 };
 
-export { contributions };
+export { getContributions };
