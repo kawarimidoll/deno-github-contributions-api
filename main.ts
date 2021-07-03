@@ -7,5 +7,5 @@ const contributions = await getContributions(
 );
 // console.log(contributions.toJson());
 console.log(
-  contributions.toTerm({ noTotal: true, noLegend: true, scheme:"brown"}),
+  contributions.toTerm({ scheme: "pink" }),
 );

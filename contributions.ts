@@ -74,9 +74,9 @@ const getContributions = async (
       : "";
 
     const legend = !noLegend
-      ? "\n Less " + colorScheme.colors.map((color) =>
+      ? " Less " + colorScheme.colors.map((color) =>
         rgb24("■", color)
-      ).join("") + " More"
+      ).join("") + " More\n"
       : "";
 
     const grass = (day?: ContributionDay) =>
@@ -85,9 +85,11 @@ const getContributions = async (
         : "";
 
     return total +
-      contributions[0].map((_, i) =>
-        contributions.map((row) => grass(row[i])).join("")
-      ).join("\n") + legend + "\n";
+      contributions[0].reduce(
+        (acc, _, i) =>
+          acc + contributions.map((row) => grass(row[i])).join("") + "\n",
+        "",
+      ) + legend;
   };
 
   return { toJson, toTerm };
