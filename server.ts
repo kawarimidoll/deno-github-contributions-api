@@ -67,6 +67,14 @@ async function handleRequest(request: Request) {
 }
 
 addEventListener("fetch", async (event) => {
-  const { body, headers } = await handleRequest(event.request);
-  event.respondWith(new Response(body, { headers }));
+  try {
+    const { body, headers } = await handleRequest(event.request);
+    event.respondWith(new Response(body, { headers }));
+  } catch (error) {
+    event.respondWith(
+      new Response(error + "\nPlease check your input\n", {
+        headers: { "content-type": "text/plain; charset=utf-8" },
+      }),
+    );
+  }
 });
