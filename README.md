@@ -1,37 +1,41 @@
-# deno-dev-template
+# deno-github-contributions-api
 
-my deno template
+Get your GitHub contributions data with deno!
 
-## Run with Velociraptor
+## Usage
 
-Need to install [Velociraptor](https://velociraptor.run/).
+### as api
 
-```
-$ # install velociraptor
-$ deno install -qAn vr https://deno.land/x/velociraptor/cli.ts
-$ # for zsh
-$ echo 'export PATH="/Users/kawarimidoll/.deno/bin:$PATH"' > ~/.zshrc
-$ # for bash
-$ # echo 'export PATH="/Users/kawarimidoll/.deno/bin:$PATH"' > ~/.bashrc
-$ # install hook
-$ vr
-```
-
-### Run main.ts
+In your terminal:
 
 ```
-$ vr start
+$ curl https://github-contributions-api.deno.dev
+# Then follow the messages...
 ```
 
-## Logger
+### as deno module
 
-Import from `logger.ts`.
+In your deno script file:
 
 ```ts
-import { Logger } from "./logger.ts";
+import { getContributions } from "https://github.com/kawarimidoll/deno-github-contributions-api/raw/main/mod.ts";
 
-Logger.debug("This log is debug!");
-Logger.info("This log is info!");
-Logger.warning("This log is warning!");
-Logger.error("This log is error!");
+const username = "your-github-username";
+const token = "xxxxxxxxxxxxxxxxxxxxxxx";
+
+const contributions = await getContributions(username, token);
+
+console.log(contributions.toTerm({ scheme: "random" }));
 ```
+
+You can see an example in
+[main.ts](https://github.com/kawarimidoll/deno-github-contributions-api/blob/main/main.ts)
+
+The personal access token which has a "read:user" scope is required.
+
+Generate your token from this page: https://github.com/settings/tokens/new
+
+## TODO
+
+- add more tests
+- add SVG api
