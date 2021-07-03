@@ -1,72 +1,72 @@
-import { contributions } from "./contributions.ts";
+import { getContributions } from "./contributions.ts";
 import env from "./env.ts";
-import h from "./tag.ts";
-import { Svg } from "./svg.ts";
-import { COLOR_SCHEMES, getColorScheme } from "./color_scheme.ts";
 
 async function handleRequest(request: Request) {
   const { pathname, searchParams, host } = new URL(request.url);
-  // console.log({ pathname, searchParams });
 
   if (pathname === "/") {
-    const html = h(
-      "html",
-      {},
-      h("head", {}, h("title", {}, "deno-github-contributions-api")),
-      h(
-        "body",
-        {},
-        h("p", {}, "Welcome to deno-github-contributions-api!"),
-        h(
-          "p",
-          {},
-          `Access to ${host}/[username] to get your contributions graph`,
-        ),
-      ),
-    );
-    return new Response(html, {
-      headers: { "content-type": "text/html; charset=utf-8" },
-    });
+    const body = [
+      "Welcome to deno-github-contributions-api!",
+      `Access to ${host}/[username] to get your contributions graph`,
+    ].reduce((acc, current) => acc + current + "\n", "");
+
+    return { body, headers: { "content-type": "text/plain; charset=utf-8" } };
   }
 
-  const message = `username: ${pathname.slice(1)}`;
+  const username = pathname.slice(1);
+
+  const contributions = await getContributions(
+    username,
+    env("GITHUB_READ_USER_TOKEN"),
+  );
 
   if (searchParams.get("type") === "json") {
-    return new Response(JSON.stringify({ message }), {
+    const body = contributions.toJson();
+    return {
+      body,
       headers: { "content-type": "application/json; charset=utf-8" },
-    });
+    };
+  }
+
+  const scheme = searchParams.get("scheme") ?? "github";
+  const noTotal = searchParams.get("no-total") == "true";
+  const noLegend = searchParams.get("no-legend") == "true";
+
+  if (searchParams.get("type") === "term") {
+    const body = contributions.toTerm({ scheme, noTotal, noLegend });
+    return { body, headers: { "content-type": "text/plain; charset=utf-8" } };
   }
 
   if (searchParams.get("type") === "text") {
-    const scheme = searchParams.get("scheme") ?? "github";
-    if (!COLOR_SCHEMES[scheme]) {
-      console.log("invalid color scheme name");
-
-      return new Response("invalid color scheme name", {
-        headers: { "content-type": "text/plain; charset=utf-8" },
-      });
-    }
-
-    const graph = await contributions(
-      "kawarimidoll",
-      env("GITHUB_READ_USER_TOKEN"),
-      {
-        scheme,
-        total: searchParams.get("total") != "none",
-        legend: searchParams.get("legend") != "none",
-      },
-    );
-    return new Response(graph, {
-      headers: { "content-type": "text/plain; charset=utf-8" },
-    });
+    const body = contributions.toText({ noTotal });
+    return { body, headers: { "content-type": "text/plain; charset=utf-8" } };
   }
 
-  const svg = Svg.render([], getColorScheme().hexColors);
-  return new Response(svg, {
-    headers: { "content-type": "image/svg+xml; charset=utf-8" },
-  });
+  // const svg = Svg.render([], getColorScheme().hexColors);
+  // return new Response(svg, {
+  //   headers: { "content-type": "image/svg+xml; charset=utf-8" },
+  // });
+
+  const body = [
+    `Use type parameter like as '${host}/${username}?type=text'`,
+    " - type=json : return data as json",
+    " - type=term : return data as colored pixels (works in the terminal with true color)",
+    " - type=text : return data as table-styled text (works in the terminal with wide window)",
+    // " - type=svg  : coming soon!",
+    "",
+    "You can use other parameters",
+    " - no-total=true  : remove total contributions count (except type=json)",
+    " - no-legend=true : remove legend (only type=term)",
+    " - scheme=[name]  : use other color scheme (only type=term)",
+  ].reduce((acc, current) => acc + current + "\n", "");
+
+  return {
+    body,
+    headers: { "content-type": "text/plain; charset=utf-8" },
+  };
 }
 
-addEventListener("fetch", (event) => {
-  event.respondWith(handleRequest(event.request));
+addEventListener("fetch", async (event) => {
+  const { body, headers } = await handleRequest(event.request);
+  event.respondWith(new Response(body, { headers }));
 });
