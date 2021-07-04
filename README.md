@@ -41,3 +41,4 @@ Generate your token from this page: https://github.com/settings/tokens/new
 
 - add more tests
 - add SVG API
+- add CLI version
