@@ -1,10 +1,12 @@
 # deno-github-contributions-api
 
-Get your GitHub contributions data with deno!
+Get your GitHub contributions data powered by deno!
+
+![gif](https://github.com/kawarimidoll/deno-github-contributions-api/raw/main/t-rec.gif)
 
 ## Usage
 
-### as api
+### as API
 
 In your terminal:
 
@@ -38,4 +40,4 @@ Generate your token from this page: https://github.com/settings/tokens/new
 ## TODO
 
 - add more tests
-- add SVG api
+- add SVG API

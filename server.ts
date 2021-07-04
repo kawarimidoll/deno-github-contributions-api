@@ -15,7 +15,7 @@ async function handleRequest(request: Request) {
   if (pathname === "/") {
     return [
       "Welcome to deno-github-contributions-api!",
-      `Access to ${host}/[username] to get your contributions graph`,
+      `Access to ${host}/[username] to get your contributions data`,
     ].reduce((acc, current) => acc + current + "\n", "");
   }
 
@@ -57,8 +57,8 @@ async function handleRequest(request: Request) {
     "",
     `Use extensions like as '${host}/${username}.text'`,
     " - .json : return data as json",
-    " - .term : return data as colored pixels (works in the terminal with true color)",
-    " - .text : return data as table-styled text (works in the terminal with wide window)",
+    " - .term : return data as colored pixels graph (works in the terminal with true color)",
+    " - .text : return data as table-styled text",
     // " - .svg  : coming soon!",
     "",
     "You can use other parameters",
