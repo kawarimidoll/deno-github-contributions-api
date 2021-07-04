@@ -40,5 +40,16 @@ Generate your token from this page: https://github.com/settings/tokens/new
 ## TODO
 
 - add more tests
+- add Month/Day names
 - add SVG API
 - add CLI version
+
+---
+
+```ts
+if (this.repo.isAwesome || this.repo.isHelpful) {
+  Star(this.repo);
+}
+```
+
+<!-- this part is inspired by https://github.com/bhumijgupta/Deno-news-cli -->
