@@ -3,45 +3,48 @@
 import { getContributions } from "./contributions.ts";
 import env from "./env.ts";
 
+function getPathExtension(request: Request): string {
+  const { pathname } = new URL(request.url);
+  const split = pathname.split(".");
+  return split.length > 1 ? split[split.length - 1] : "";
+}
+
 async function handleRequest(request: Request) {
   const { pathname, searchParams, host } = new URL(request.url);
 
   if (pathname === "/") {
-    const body = [
+    return [
       "Welcome to deno-github-contributions-api!",
       `Access to ${host}/[username] to get your contributions graph`,
     ].reduce((acc, current) => acc + current + "\n", "");
-
-    return { body, headers: { "content-type": "text/plain; charset=utf-8" } };
   }
 
-  const username = pathname.slice(1);
+  const paths = pathname.split("/");
+  if (paths.length > 2) {
+    throw new Error("Invalid path. Access to ${host}/[username]");
+  }
+  const username = paths[1].replace(/\..*$/, "");
+  const ext = getPathExtension(request);
 
   const contributions = await getContributions(
     username,
     env("GITHUB_READ_USER_TOKEN"),
   );
 
-  if (searchParams.get("type") === "json") {
-    const body = contributions.toJson();
-    return {
-      body,
-      headers: { "content-type": "application/json; charset=utf-8" },
-    };
+  if (ext === "json") {
+    return contributions.toJson();
   }
 
   const scheme = searchParams.get("scheme") ?? "github";
   const noTotal = searchParams.get("no-total") == "true";
   const noLegend = searchParams.get("no-legend") == "true";
 
-  if (searchParams.get("type") === "term") {
-    const body = contributions.toTerm({ scheme, noTotal, noLegend });
-    return { body, headers: { "content-type": "text/plain; charset=utf-8" } };
+  if (ext === "term") {
+    return contributions.toTerm({ scheme, noTotal, noLegend });
   }
 
-  if (searchParams.get("type") === "text") {
-    const body = contributions.toText({ noTotal });
-    return { body, headers: { "content-type": "text/plain; charset=utf-8" } };
+  if (ext === "text") {
+    return contributions.toText({ noTotal });
   }
 
   // const svg = Svg.render([], getColorScheme().hexColors);
@@ -49,35 +52,40 @@ async function handleRequest(request: Request) {
   //   headers: { "content-type": "image/svg+xml; charset=utf-8" },
   // });
 
-  const body = [
-    `Use type parameter like as '${host}/${username}?type=text'`,
-    " - type=json : return data as json",
-    " - type=term : return data as colored pixels (works in the terminal with true color)",
-    " - type=text : return data as table-styled text (works in the terminal with wide window)",
-    // " - type=svg  : coming soon!",
+  return [
+    `${contributions.totalContributions} contributions in the last year.`,
+    "",
+    `Use extensions like as '${host}/${username}.text'`,
+    " - .json : return data as json",
+    " - .term : return data as colored pixels (works in the terminal with true color)",
+    " - .text : return data as table-styled text (works in the terminal with wide window)",
+    // " - .svg  : coming soon!",
     "",
     "You can use other parameters",
     " - no-total=true  : remove total contributions count (except type=json)",
     " - no-legend=true : remove legend (only type=term)",
     " - scheme=[name]  : use other color scheme (only type=term)",
   ].reduce((acc, current) => acc + current + "\n", "");
-
-  return {
-    body,
-    headers: { "content-type": "text/plain; charset=utf-8" },
-  };
 }
 
 addEventListener("fetch", async (event) => {
+  const ext = getPathExtension(event.request);
+  const type = ext == "json" ? "application/json" : "text/plain";
+  const headers = { "content-type": `${type}; charset=utf-8` };
+
   try {
-    const { body, headers } = await handleRequest(event.request);
+    const body = await handleRequest(event.request);
     event.respondWith(new Response(body, { headers }));
   } catch (error) {
     console.error(error);
+
+    const body = ext == "json"
+      ? JSON.stringify({ error: error.toString() })
+      : error;
     event.respondWith(
-      new Response(error + "\nPlease check your input\n", {
-        headers: { "content-type": "text/plain; charset=utf-8" },
+      new Response(body, {
         status: 400,
+        headers,
       }),
     );
   }
