@@ -9,4 +9,8 @@ jobs:
       - uses: actions/checkout@master
       - uses: denoland/setup-deno@v1
       - uses: jurassiscripts/setup-velociraptor@v1
+      - name: Create env file
+        run: |
+          touch .env
+          echo GITHUB_READ_USER_TOKEN=${{ secrets.GITHUB_READ_USER_TOKEN }} >> .env
       - run: VR_HOOKS=false vr ci
