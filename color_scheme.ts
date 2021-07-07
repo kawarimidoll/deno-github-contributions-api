@@ -73,5 +73,5 @@ const getColorScheme = (name = "github") => {
   return { hexStrColors, hexNumColors, getByLevel };
 };
 
-export { COLOR_SCHEMES, getColorScheme };
+export { COLOR_SCHEMES, getColorScheme, isValidColorSchemeName };
 export type { ColorSchemeName };
