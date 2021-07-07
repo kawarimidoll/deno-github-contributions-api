@@ -12,5 +12,5 @@ jobs:
       - name: Create env file
         run: |
           touch .env
-          echo GITHUB_READ_USER_TOKEN=${{ secrets.GITHUB_READ_USER_TOKEN }} >> .env
+          echo GH_READ_USER_TOKEN=${{ secrets.GH_READ_USER_TOKEN }} >> .env
       - run: VR_HOOKS=false vr ci
