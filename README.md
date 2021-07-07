@@ -48,7 +48,7 @@ Generate your token from this page: https://github.com/settings/tokens/new
 - add more tests
 - add Month/Day names
 - add SVG API
-- add CLI version
+<!-- - add CLI version -->
 
 ---
 
