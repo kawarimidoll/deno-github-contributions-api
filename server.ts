@@ -28,7 +28,7 @@ async function handleRequest(request: Request) {
 
   const contributions = await getContributions(
     username,
-    env("GITHUB_READ_USER_TOKEN"),
+    env("GH_READ_USER_TOKEN"),
   );
 
   const scheme = searchParams.get("scheme") ?? "github";

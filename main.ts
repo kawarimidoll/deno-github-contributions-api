@@ -2,7 +2,7 @@ import { getContributions } from "./contributions.ts";
 import env from "./env.ts";
 
 const username = "kawarimidoll";
-const token = env("GITHUB_READ_USER_TOKEN");
+const token = env("GH_READ_USER_TOKEN");
 
 const contributions = await getContributions(username, token);
 
