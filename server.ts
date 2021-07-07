@@ -31,13 +31,14 @@ async function handleRequest(request: Request) {
     env("GITHUB_READ_USER_TOKEN"),
   );
 
-  if (ext === "json") {
-    return contributions.toJson();
-  }
-
   const scheme = searchParams.get("scheme") ?? "github";
   const noTotal = searchParams.get("no-total") == "true";
   const noLegend = searchParams.get("no-legend") == "true";
+  const flat = searchParams.get("flat") == "true";
+
+  if (ext === "json") {
+    return contributions.toJson({ flat });
+  }
 
   if (ext === "term") {
     return contributions.toTerm({ scheme, noTotal, noLegend });
@@ -64,6 +65,7 @@ async function handleRequest(request: Request) {
     "You can use other parameters",
     " - no-total=true  : remove total contributions count (except type=json)",
     " - no-legend=true : remove legend (only type=term)",
+    " - flat=true      : return contributions as one-dimensional array (only type=json)",
     " - scheme=[name]  : use other color scheme (only type=term)",
   ].reduce((acc, current) => acc + current + "\n", "");
 }

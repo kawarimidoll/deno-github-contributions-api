@@ -97,9 +97,13 @@ const getContributions = async (
 
   const totalMsg = totalContributions + " contributions in the last year\n";
 
-  const toJson = () =>
+  const toJson = (
+    {
+      flat = false,
+    } = {},
+  ) =>
     JSON.stringify({
-      contributions,
+      contributions: flat ? contributions.flat() : contributions,
       totalContributions,
     });
 
