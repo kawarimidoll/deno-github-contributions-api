@@ -1,5 +1,11 @@
 # deno-github-contributions-api
 
+[![ci](https://github.com/kawarimidoll/deno-github-contributions-api/workflows/ci/badge.svg)](.github/workflows/ci.yml)
+[![deno deploy](https://img.shields.io/badge/deno-deploy-blue?logo=deno)](https://github-contributions-api.deno.dev)
+[![deno.land](https://img.shields.io/badge/deno-%5E1.0.0-green?logo=deno)](https://deno.land)
+[![vr scripts](https://badges.velociraptor.run/flat.svg)](https://velociraptor.run)
+[![LICENSE](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
+
 Get your GitHub contributions data powered by deno!
 
 ![gif](https://github.com/kawarimidoll/deno-github-contributions-api/raw/main/t-rec.gif)
@@ -48,7 +54,7 @@ Generate your token from this page: https://github.com/settings/tokens/new
 
 ```ts
 if (this.repo.isAwesome || this.repo.isHelpful) {
-  Star(this.repo);
+  star(this.repo);
 }
 ```
 
