@@ -32,6 +32,7 @@ async function handleRequest(request: Request) {
   );
 
   const scheme = searchParams.get("scheme") ?? "github";
+  const pixel = searchParams.get("pixel") ?? undefined;
   const noTotal = searchParams.get("no-total") == "true";
   const noLegend = searchParams.get("no-legend") == "true";
   const flat = searchParams.get("flat") == "true";
@@ -41,7 +42,7 @@ async function handleRequest(request: Request) {
   }
 
   if (ext === "term") {
-    return contributions.toTerm({ scheme, noTotal, noLegend });
+    return contributions.toTerm({ scheme, pixel, noTotal, noLegend });
   }
 
   if (ext === "text") {
@@ -66,7 +67,8 @@ async function handleRequest(request: Request) {
     " - no-total=true  : remove total contributions count (except type=json)",
     " - no-legend=true : remove legend (only type=term)",
     " - flat=true      : return contributions as one-dimensional array (only type=json)",
-    " - scheme=[name]  : use other color scheme (only type=term)",
+    " - scheme=[name]  : use specific color scheme (only type=term)",
+    " - pixel=[char]   : use the character as pixels (url encoding may required, only type=term)",
   ].reduce((acc, current) => acc + current + "\n", "");
 }
 

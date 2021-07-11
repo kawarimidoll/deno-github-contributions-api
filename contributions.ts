@@ -112,6 +112,7 @@ const getContributions = async (
       noTotal = false,
       noLegend = false,
       scheme = "github",
+      pixel = "■",
     } = {},
   ) => {
     const colorScheme = getColorScheme(scheme);
@@ -123,13 +124,13 @@ const getContributions = async (
     const legend = !noLegend
       ? " ".repeat(contributions.length - 15) +
         "Less " + colorScheme.hexNumColors.map((color) =>
-          rgb24("■", color)
+          rgb24(pixel, color)
         ).join("") + " More\n"
       : "";
 
     const grass = (day?: ContributionDay) =>
       day?.contributionLevel
-        ? rgb24("■", colorScheme.getByLevel(day?.contributionLevel))
+        ? rgb24(pixel, colorScheme.getByLevel(day?.contributionLevel))
         : "";
 
     return total +
