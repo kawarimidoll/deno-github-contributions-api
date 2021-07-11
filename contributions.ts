@@ -115,14 +115,24 @@ const getContributions = async (
       pixel = "■",
     } = {},
   ) => {
+    if (pixel.length > 2) {
+      // length == 2 is ok
+      // like as '[]', ' '
+      throw new Error(`Pixel '${pixel}' is too long. Use 1 or 2 characters.`);
+    }
+
     const colorScheme = getColorScheme(scheme);
 
     const total = !noTotal ? totalMsg : "";
 
-    // 15 is length of 'Less xxxxx More'
-    // `repeat()` can't be used because this string has color information
+    // 10 is length of 'Less  More'
+    // 5 is count of colored pixels as legend
+    const legendOffset = " ".repeat(
+      (contributions.length - 5) * pixel.length - 10,
+    );
+
     const legend = !noLegend
-      ? " ".repeat(contributions.length - 15) +
+      ? legendOffset +
         "Less " + colorScheme.hexNumColors.map((color) =>
           rgb24(pixel, color)
         ).join("") + " More\n"
