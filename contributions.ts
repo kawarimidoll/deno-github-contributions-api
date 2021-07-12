@@ -1,4 +1,4 @@
-import { ky, rgb24 } from "./deps.ts";
+import { ky, rgb24, stringWidth } from "./deps.ts";
 import { getColorScheme } from "./color_scheme.ts";
 import { hasOwnProperty } from "./utils.ts";
 
@@ -115,10 +115,11 @@ const getContributions = async (
       pixel = "■",
     } = {},
   ) => {
-    if (pixel.length > 2) {
-      // length == 2 is ok
-      // like as '[]', ' '
-      throw new Error(`Pixel '${pixel}' is too long. Use 1 or 2 characters.`);
+    const pixelWidth = stringWidth(pixel);
+    if (pixelWidth > 2) {
+      // width == 2 is ok
+      // like as "[]", "草", " "
+      throw new Error(`Pixel '${pixel}' is too long. Max width of pixel is 2.`);
     }
 
     const colorScheme = getColorScheme(scheme);
@@ -128,7 +129,7 @@ const getContributions = async (
     // 10 is length of 'Less  More'
     // 5 is count of colored pixels as legend
     const legendOffset = " ".repeat(
-      (contributions.length - 5) * pixel.length - 10,
+      (contributions.length - 5) * pixelWidth - 10,
     );
 
     const legend = !noLegend
