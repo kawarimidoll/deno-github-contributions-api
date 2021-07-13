@@ -1,3 +1,4 @@
 !.vim
 !.env.example
 *.log
+*.vscode/

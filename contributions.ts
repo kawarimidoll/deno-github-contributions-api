@@ -1,5 +1,5 @@
-import { ky, rgb24, stringWidth } from "./deps.ts";
 import { getColorScheme } from "./color_scheme.ts";
+import { bgRgb24, ky, rgb24, stringWidth } from "./deps.ts";
 import { hasOwnProperty } from "./utils.ts";
 
 interface ContributionDay {
@@ -113,6 +113,7 @@ const getContributions = async (
       noLegend = false,
       scheme = "github",
       pixel = "■",
+      invert = false,
     } = {},
   ) => {
     const pixelWidth = stringWidth(pixel);
@@ -135,13 +136,14 @@ const getContributions = async (
     const legend = !noLegend
       ? legendOffset +
         "Less " + colorScheme.hexNumColors.map((color) =>
-          rgb24(pixel, color)
+          invert ? bgRgb24(pixel, color) : rgb24(pixel, color)
         ).join("") + " More\n"
       : "";
 
     const grass = (day?: ContributionDay) =>
       day?.contributionLevel
-        ? rgb24(pixel, colorScheme.getByLevel(day?.contributionLevel))
+        ? invert ? bgRgb24(pixel, colorScheme.getByLevel(day?.contributionLevel))
+          : rgb24(pixel, colorScheme.getByLevel(day?.contributionLevel))
         : "";
 
     return total +
@@ -184,3 +186,4 @@ const getContributions = async (
 
 export { CONTRIBUTION_LEVELS, getContributions, isValidContributionLevelName };
 export type { ContributionDay, ContributionLevelName };
+
