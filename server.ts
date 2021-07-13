@@ -67,8 +67,8 @@ async function handleRequest(request: Request) {
     "You can use other parameters",
     " - no-total=true  : remove total contributions count (except type=json)",
     " - no-legend=true : remove legend (only type=term)",
+    " - invert=true    : invert the background and foreground colors (only type=term)",
     " - flat=true      : return contributions as one-dimensional array (only type=json)",
-    " - invert=true    : invert the background and foreground colors (only type=json)",
     " - scheme=[name]  : use specific color scheme (only type=term)",
     " - pixel=[char]   : use the character as pixels (url encoding may required, only type=term)",
   ].reduce((acc, current) => acc + current + "\n", "");
