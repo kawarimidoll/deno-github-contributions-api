@@ -23,7 +23,7 @@ const isValidContributionLevelName = (
 ): name is ContributionLevelName =>
   !!name && hasOwnProperty(CONTRIBUTION_LEVELS, name);
 
-const getContributions = async (
+const getContributionCalendar = async (
   userName: string,
   token: string,
 ) => {
@@ -80,32 +80,128 @@ const getContributions = async (
 
   const contributions = weeks.map((week) => week.contributionDays);
 
-  const moreContributedDay = (a: ContributionDay, b: ContributionDay) =>
-    a.contributionCount > b.contributionCount ? a : b;
+  return { contributions, totalContributions };
+};
 
-  const maxContributionDay = contributions.reduce(
+const totalMsg = (totalNum: number): string =>
+  totalNum + " contributions in the last year\n";
+
+const moreContributionDay = (a: ContributionDay, b: ContributionDay) =>
+  a.contributionCount > b.contributionCount ? a : b;
+
+const getMaxContributionDay = (
+  contributions: ContributionDay[][],
+): ContributionDay =>
+  contributions.reduce(
     (max, week) =>
-      moreContributedDay(
+      moreContributionDay(
         max,
         week.reduce(
-          (maxInWeek, current) => moreContributedDay(maxInWeek, current),
+          (maxInWeek, current) => moreContributionDay(maxInWeek, current),
           week[0],
         ),
       ),
     contributions[0][0],
   );
 
-  const totalMsg = totalContributions + " contributions in the last year\n";
+const contributionsToJson = (
+  contributions: ContributionDay[][],
+  totalContributions: number,
+  {
+    flat = false,
+  } = {},
+) =>
+  JSON.stringify({
+    contributions: flat ? contributions.flat() : contributions,
+    totalContributions,
+  });
 
-  const toJson = (
-    {
-      flat = false,
-    } = {},
-  ) =>
-    JSON.stringify({
-      contributions: flat ? contributions.flat() : contributions,
-      totalContributions,
-    });
+const contributionsToTerm = (
+  contributions: ContributionDay[][],
+  totalContributions: number,
+  {
+    noTotal = false,
+    noLegend = false,
+    scheme = "github",
+    pixel = "■",
+    invert = false,
+  } = {},
+) => {
+  const pixelWidth = stringWidth(pixel);
+  if (pixelWidth > 2) {
+    // width == 2 is ok
+    // like as "[]", "草", " "
+    throw new Error(`Pixel '${pixel}' is too long. Max width of pixel is 2.`);
+  }
+
+  const colorScheme = getColorScheme(scheme);
+
+  const total = !noTotal ? totalMsg(totalContributions) : "";
+
+  // 10 is length of 'Less  More'
+  // 5 is count of colored pixels as legend
+  const legendOffset = " ".repeat(
+    (contributions.length - 5) * pixelWidth - 10,
+  );
+
+  const legend = !noLegend
+    ? legendOffset +
+      "Less " + colorScheme.hexNumColors.map((color) =>
+        invert ? bgRgb24(pixel, color) : rgb24(pixel, color)
+      ).join("") + " More\n"
+    : "";
+
+  const grass = (day?: ContributionDay) =>
+    day?.contributionLevel
+      ? invert
+        ? bgRgb24(pixel, colorScheme.getByLevel(day?.contributionLevel))
+        : rgb24(pixel, colorScheme.getByLevel(day?.contributionLevel))
+      : "";
+
+  return total +
+    contributions[0].reduce(
+      (acc, _, i) =>
+        acc + contributions.map((row) => grass(row[i])).join("") + "\n",
+      "",
+    ) + legend;
+};
+
+const contributionsToText = (
+  contributions: ContributionDay[][],
+  totalContributions: number,
+  maxContributionDay: ContributionDay,
+  {
+    noTotal = false,
+  } = {},
+) => {
+  const total = !noTotal ? totalMsg(totalContributions) : "";
+
+  const pad = String(maxContributionDay.contributionCount).length;
+
+  return total +
+    contributions[0].reduce(
+      (acc, _, i) =>
+        acc + contributions.map((row) =>
+          `${row[i]?.contributionCount ?? ""}`.padStart(pad)
+        ).join(",") +
+        "\n",
+      "",
+    );
+};
+
+const getContributions = async (
+  userName: string,
+  token: string,
+) => {
+  const { contributions, totalContributions } = await getContributionCalendar(
+    userName,
+    token,
+  );
+
+  const maxContributionDay = getMaxContributionDay(contributions);
+
+  const toJson = ({ flat = false } = {}) =>
+    contributionsToJson(contributions, totalContributions, { flat });
 
   const toTerm = (
     {
@@ -115,65 +211,23 @@ const getContributions = async (
       pixel = "■",
       invert = false,
     } = {},
-  ) => {
-    const pixelWidth = stringWidth(pixel);
-    if (pixelWidth > 2) {
-      // width == 2 is ok
-      // like as "[]", "草", " "
-      throw new Error(`Pixel '${pixel}' is too long. Max width of pixel is 2.`);
-    }
-
-    const colorScheme = getColorScheme(scheme);
-
-    const total = !noTotal ? totalMsg : "";
-
-    // 10 is length of 'Less  More'
-    // 5 is count of colored pixels as legend
-    const legendOffset = " ".repeat(
-      (contributions.length - 5) * pixelWidth - 10,
-    );
-
-    const legend = !noLegend
-      ? legendOffset +
-        "Less " + colorScheme.hexNumColors.map((color) =>
-          invert ? bgRgb24(pixel, color) : rgb24(pixel, color)
-        ).join("") + " More\n"
-      : "";
-
-    const grass = (day?: ContributionDay) =>
-      day?.contributionLevel
-        ? invert
-          ? bgRgb24(pixel, colorScheme.getByLevel(day?.contributionLevel))
-          : rgb24(pixel, colorScheme.getByLevel(day?.contributionLevel))
-        : "";
-
-    return total +
-      contributions[0].reduce(
-        (acc, _, i) =>
-          acc + contributions.map((row) => grass(row[i])).join("") + "\n",
-        "",
-      ) + legend;
-  };
+  ) =>
+    contributionsToTerm(contributions, totalContributions, {
+      noTotal,
+      noLegend,
+      scheme,
+      pixel,
+      invert,
+    });
 
   const toText = (
     {
       noTotal = false,
     } = {},
-  ) => {
-    const total = !noTotal ? totalMsg : "";
-
-    const pad = String(maxContributionDay.contributionCount).length;
-
-    return total +
-      contributions[0].reduce(
-        (acc, _, i) =>
-          acc + contributions.map((row) =>
-            `${row[i]?.contributionCount ?? ""}`.padStart(pad)
-          ).join(",") +
-          "\n",
-        "",
-      );
-  };
+  ) =>
+    contributionsToText(contributions, totalContributions, maxContributionDay, {
+      noTotal,
+    });
 
   return {
     contributions,
@@ -185,5 +239,16 @@ const getContributions = async (
   };
 };
 
-export { CONTRIBUTION_LEVELS, getContributions, isValidContributionLevelName };
+export {
+  CONTRIBUTION_LEVELS,
+  contributionsToJson,
+  contributionsToTerm,
+  contributionsToText,
+  getContributionCalendar,
+  getContributions,
+  getMaxContributionDay,
+  isValidContributionLevelName,
+  moreContributionDay,
+  totalMsg,
+};
 export type { ContributionDay, ContributionLevelName };
