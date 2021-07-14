@@ -3,6 +3,8 @@ import {
   assertEquals,
   assertThrows,
   assertThrowsAsync,
+  ky,
+  testdouble,
 } from "./deps.ts";
 import {
   ContributionDay,
@@ -10,6 +12,7 @@ import {
   contributionsToTerm,
   contributionsToText,
   getContributionCalendar,
+  // getContributions,
   getMaxContributionDay,
   isValidContributionLevelName,
   moreContributionDay,
@@ -124,13 +127,71 @@ Deno.test("contributionsToText", async () => {
   );
 });
 
-Deno.test("getContributionCalendar", () => {
+// Deno.test("getContributions", () => {
+//   testdouble.replace
+//   assertThrowsAsync(
+//     () => {
+//       return getContributionCalendar("", "");
+//     },
+//     Error,
+//     "Missing required arguments",
+//   );
+// });
+
+Deno.test("getContributionCalendar", async () => {
   assertThrowsAsync(
     () => {
-      return getContributionCalendar("", "");
+      return getContributionCalendar("userName", "");
     },
     Error,
     "Missing required arguments",
+  );
+  assertThrowsAsync(
+    () => {
+      return getContributionCalendar("", "token");
+    },
+    Error,
+    "Missing required arguments",
+  );
+
+  testdouble.replace(
+    ky,
+    "post",
+    (_: string) => ({
+      json: () => ({ data: null }),
+    }),
+  );
+
+  assertThrowsAsync(
+    () => {
+      return getContributionCalendar("a", "a");
+    },
+    Error,
+    "Could not get contributions data",
+  );
+
+  testdouble.replace(
+    ky,
+    "post",
+    (_: string) => ({
+      json: () => ({
+        data: {
+          user: {
+            contributionsCollection: {
+              contributionCalendar: {
+                weeks: [{ contributionDays: [max] }],
+                totalContributions,
+              },
+            },
+          },
+        },
+      }),
+    }),
+  );
+
+  assertEquals(
+    await getContributionCalendar("a", "a"),
+    { contributions: [[max]], totalContributions },
   );
 });
 

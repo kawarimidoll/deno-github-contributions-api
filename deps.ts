@@ -1,4 +1,8 @@
 import ky from "https://cdn.skypack.dev/ky?dts";
+
+// @deno-types="https://esm.sh/testdouble@3.16.1/index.d.ts"
+import * as testdouble from "https://esm.sh/testdouble@3.16.1/dist/testdouble.js";
+
 import stringWidth from "https://cdn.skypack.dev/string-width";
 import { bgRgb24, rgb24 } from "https://deno.land/std@0.101.0/fmt/colors.ts";
 import {
@@ -21,4 +25,5 @@ export {
   ky,
   rgb24,
   stringWidth,
+  testdouble,
 };
