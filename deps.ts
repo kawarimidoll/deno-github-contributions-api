@@ -5,6 +5,7 @@ import {
   assert,
   assertEquals,
   assertThrows,
+  assertThrowsAsync,
 } from "https://deno.land/std@0.101.0/testing/asserts.ts";
 
 import { Env } from "https://deno.land/x/env@v2.2.0/env.js";
@@ -14,6 +15,7 @@ export {
   assert,
   assertEquals,
   assertThrows,
+  assertThrowsAsync,
   bgRgb24,
   env,
   ky,
