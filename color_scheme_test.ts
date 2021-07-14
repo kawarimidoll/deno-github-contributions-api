@@ -14,6 +14,10 @@ Deno.test("getColorScheme", () => {
   const scheme2 = getColorScheme();
   assertEquals(scheme2.hexStrColors, correctScheme);
 
+  assertEquals(scheme2.getByLevel("NONE"), 0xeeeeee);
+  assertEquals(scheme2.getByLevel("FIRST_QUARTILE"), 0x9be9a8);
+  assertEquals(scheme2.getByLevel(), 0xeeeeee);
+
   const scheme3 = getColorScheme("random");
   assert(Object.values(COLOR_SCHEMES).includes(scheme3.hexStrColors));
 
