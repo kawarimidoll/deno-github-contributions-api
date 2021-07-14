@@ -25,16 +25,19 @@ Deno.test("convertToSixChars", () => {
   assertEquals(convertToSixChars("#12A"), "1122AA");
   assertEquals(convertToSixChars("12A"), "1122AA");
   assertEquals(convertToSixChars("12"), "eeeeee");
+  assertEquals(convertToSixChars("hex"), "eeeeee");
 });
 
-Deno.test("hexToRgbObj", () => {
+Deno.test("hexStrToRgbObj", () => {
   assertEquals(hexStrToRgbObj("#123456"), { r: 18, g: 52, b: 86 });
   assertEquals(hexStrToRgbObj("123456"), { r: 18, g: 52, b: 86 });
   assertEquals(hexStrToRgbObj("#12A"), { r: 17, g: 34, b: 170 });
   assertEquals(hexStrToRgbObj("12A"), { r: 17, g: 34, b: 170 });
+  assertEquals(hexStrToRgbObj("12"), { r: 238, g: 238, b: 238 });
+  assertEquals(hexStrToRgbObj("hex"), { r: 238, g: 238, b: 238 });
 });
 
-Deno.test("hexToRgbNum", () => {
+Deno.test("hexStrToHexNum", () => {
   assertEquals(hexStrToHexNum("#123456"), 0x123456);
   assertEquals(hexStrToHexNum("123456"), 0x123456);
   assertEquals(hexStrToHexNum("#12A"), 0x1122aa);
