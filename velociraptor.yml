@@ -30,9 +30,13 @@ scripts:
     gitHook: pre-commit
 
   test:
-    cmd: deno test -Ar
+    cmd: deno test -Ar --coverage=cov_profile
     desc: Runs the tests
     gitHook: pre-push
+
+  cov:
+    cmd: deno coverage cov_profile
+    desc: Shows uncovered lists
 
   ci:
     cmd:

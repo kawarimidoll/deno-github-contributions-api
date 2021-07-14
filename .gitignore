@@ -2,3 +2,4 @@
 !.env.example
 *.log
 *.vscode/
+cov_profile
