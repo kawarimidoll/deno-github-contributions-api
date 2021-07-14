@@ -7,4 +7,16 @@ import {
   assertThrows,
 } from "https://deno.land/std@0.99.0/testing/asserts.ts";
 
-export { assert, assertEquals, assertThrows, bgRgb24, ky, rgb24, stringWidth };
+import { Env } from "https://deno.land/x/env@v2.2.0/env.js";
+const env = new Env();
+
+export {
+  assert,
+  assertEquals,
+  assertThrows,
+  bgRgb24,
+  env,
+  ky,
+  rgb24,
+  stringWidth,
+};

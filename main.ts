@@ -1,8 +1,8 @@
 import { getContributions } from "./contributions.ts";
-import env from "./env.ts";
+import { env } from "./deps.ts";
 
 const username = "kawarimidoll";
-const token = env("GH_READ_USER_TOKEN");
+const token = env.require("GH_READ_USER_TOKEN");
 
 const contributions = await getContributions(username, token);
 

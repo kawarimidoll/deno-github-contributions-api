@@ -1,7 +1,7 @@
 /// <reference path="./deploy.d.ts" />
 
 import { getContributions } from "./contributions.ts";
-import env from "./env.ts";
+import { env } from "./deps.ts";
 
 function getPathExtension(request: Request): string {
   const { pathname } = new URL(request.url);
@@ -28,7 +28,7 @@ async function handleRequest(request: Request) {
 
   const contributions = await getContributions(
     username,
-    env("GH_READ_USER_TOKEN"),
+    env.require("GH_READ_USER_TOKEN"),
   );
 
   const scheme = searchParams.get("scheme") ?? "github";
