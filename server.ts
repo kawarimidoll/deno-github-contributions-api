@@ -21,7 +21,9 @@ async function handleRequest(request: Request) {
 
   const paths = pathname.split("/");
   if (paths.length > 2) {
-    throw new Error(`Invalid path. Access to ${host}/[username]`);
+    throw new Error(
+      `'${request.url}' is invalid path. Access to ${host}/[username]`,
+    );
   }
   const username = paths[1].replace(/\..*$/, "");
   const ext = getPathExtension(request);
