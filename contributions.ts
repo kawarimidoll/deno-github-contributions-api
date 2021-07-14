@@ -142,7 +142,8 @@ const getContributions = async (
 
     const grass = (day?: ContributionDay) =>
       day?.contributionLevel
-        ? invert ? bgRgb24(pixel, colorScheme.getByLevel(day?.contributionLevel))
+        ? invert
+          ? bgRgb24(pixel, colorScheme.getByLevel(day?.contributionLevel))
           : rgb24(pixel, colorScheme.getByLevel(day?.contributionLevel))
         : "";
 
@@ -186,4 +187,3 @@ const getContributions = async (
 
 export { CONTRIBUTION_LEVELS, getContributions, isValidContributionLevelName };
 export type { ContributionDay, ContributionLevelName };
-
