@@ -10,18 +10,33 @@ scripts:
   start:
     desc: Runs main script
     cmd: main.ts
+
   dev:
     desc: Starts local server
     cmd: deployctl run --libs="" --watch --env=.env ./server.ts
-  test: deno test
-  lint: deno lint
-  fmt: deno fmt
+
+  lint:
+    cmd: deno lint
+    desc: Runs lint
+    gitHook: pre-commit
+
+  fmt:
+    cmd: |
+      FILES=$(git diff --cached --name-only --diff-filter=ACMR "*.ts")
+      [ -z "$FILES" ] && exit 0
+      echo "$FILES" | xargs deno fmt
+      echo "$FILES" | xargs git add
+    desc: Formats staged files
+    gitHook: pre-commit
+
+  test:
+    cmd: deno test -Ar
+    desc: Runs the tests
+    gitHook: pre-push
+
   ci:
-    - vr lint
-    - vr fmt --check
-    - vr test
-  pre-commit:
     cmd:
       - vr lint
-      - vr fmt
-    gitHook: pre-commit
+      - deno fmt --check
+      - vr test
+    desc: Runs lint, check format and test
