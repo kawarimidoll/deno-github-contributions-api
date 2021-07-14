@@ -36,13 +36,14 @@ async function handleRequest(request: Request) {
   const noTotal = searchParams.get("no-total") == "true";
   const noLegend = searchParams.get("no-legend") == "true";
   const flat = searchParams.get("flat") == "true";
+  const invert = searchParams.get("invert") == "true";
 
   if (ext === "json") {
     return contributions.toJson({ flat });
   }
 
   if (ext === "term") {
-    return contributions.toTerm({ scheme, pixel, noTotal, noLegend });
+    return contributions.toTerm({ scheme, pixel, noTotal, noLegend, invert });
   }
 
   if (ext === "text") {
@@ -66,6 +67,7 @@ async function handleRequest(request: Request) {
     "You can use other parameters",
     " - no-total=true  : remove total contributions count (except type=json)",
     " - no-legend=true : remove legend (only type=term)",
+    " - invert=true    : invert the background and foreground colors (only type=term)",
     " - flat=true      : return contributions as one-dimensional array (only type=json)",
     " - scheme=[name]  : use specific color scheme (only type=term)",
     " - pixel=[char]   : use the character as pixels (url encoding may required, only type=term)",

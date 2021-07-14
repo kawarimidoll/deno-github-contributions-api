@@ -1,4 +1,4 @@
-import { ContributionDay } from "./types.ts";
+import { ContributionDay } from "./contributions.ts";
 import h from "./tag.ts";
 
 const svgID = "deno-github-contributions-graph";
