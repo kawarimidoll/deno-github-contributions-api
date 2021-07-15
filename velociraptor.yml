@@ -1,8 +1,9 @@
 allow:
-  # - write=app.log
-  # - read=.env
+  # - write
+  # - read
   - env
   - net
+
 envFile:
   - .env
 
@@ -13,24 +14,30 @@ scripts:
 
   dev:
     desc: Starts local server
-    cmd: deployctl run --libs="" --watch --env=.env ./server.ts
+    cmd: deployctl run --libs="" --watch --env=.env server.ts
 
   lint:
     cmd: deno lint
     desc: Runs lint
-    gitHook: pre-commit
 
   fmt:
+    cmd: deno fmt
+    desc: Runs format
+
+  pre-commit:
     cmd: |
-      FILES=$(git diff --cached --name-only --diff-filter=ACMR "*.ts")
-      [ -z "$FILES" ] && exit 0
-      echo "$FILES" | xargs deno fmt
-      echo "$FILES" | xargs git add
-    desc: Formats staged files
+      FILES=$(git diff --staged --name-only --diff-filter=ACMR "*.ts")
+          [ -z "$FILES" ] && exit 0
+          echo "$FILES" | xargs deno lint
+          echo "$FILES" | xargs deno fmt
+          # echo "$FILES" | xargs git add
+    desc: Lints and formats staged files
     gitHook: pre-commit
 
   test:
-    cmd: deno test -Ar --coverage=cov_profile
+    allow:
+      - read
+    cmd: deno test --reload --coverage=cov_profile
     desc: Runs the tests
     gitHook: pre-push
 
@@ -39,8 +46,12 @@ scripts:
     desc: Shows uncovered lists
 
   ci:
+    allow:
+      - read
+    env:
+      VR_HOOKS: false
     cmd:
-      - vr lint
+      - deno lint
       - deno fmt --check
-      - vr test
+      - deno test -Ar
     desc: Runs lint, check format and test
