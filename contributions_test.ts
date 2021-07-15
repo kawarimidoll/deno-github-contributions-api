@@ -12,7 +12,7 @@ import {
   contributionsToTerm,
   contributionsToText,
   getContributionCalendar,
-  // getContributions,
+  getContributions,
   getMaxContributionDay,
   isValidContributionLevelName,
   moreContributionDay,
@@ -22,9 +22,14 @@ import {
 const {
   contributions,
   totalContributions,
+}: {
+  contributions: ContributionDay[][];
+  totalContributions: number;
 } = JSON.parse(
   await Deno.readTextFile("./resources/tests/example_contributions.json"),
 );
+
+const weeks = contributions.map((week) => ({ contributionDays: week }));
 
 const max: ContributionDay = {
   contributionCount: 32,
@@ -127,16 +132,51 @@ Deno.test("contributionsToText", async () => {
   );
 });
 
-// Deno.test("getContributions", () => {
-//   testdouble.replace
-//   assertThrowsAsync(
-//     () => {
-//       return getContributionCalendar("", "");
-//     },
-//     Error,
-//     "Missing required arguments",
-//   );
-// });
+Deno.test("getContributions", async () => {
+  testdouble.replace(
+    ky,
+    "post",
+    (_: string) => ({
+      json: () => ({ data: null }),
+    }),
+  );
+
+  assertThrowsAsync(
+    () => {
+      return getContributions("a", "a");
+    },
+    Error,
+    "Could not get contributions data",
+  );
+
+  testdouble.replace(
+    ky,
+    "post",
+    () => ({
+      json: () => ({
+        data: {
+          user: {
+            contributionsCollection: {
+              contributionCalendar: {
+                weeks,
+                totalContributions,
+              },
+            },
+          },
+        },
+      }),
+    }),
+  );
+
+  const obj = await getContributions("a", "a");
+  assert(obj);
+  assertEquals(obj.contributions, contributions);
+  assertEquals(obj.totalContributions, totalContributions);
+  assertEquals(obj.maxContributionDay, max);
+  assert(obj.toJson());
+  assert(obj.toTerm());
+  assert(obj.toText());
+});
 
 Deno.test("getContributionCalendar", async () => {
   assertThrowsAsync(
@@ -173,13 +213,14 @@ Deno.test("getContributionCalendar", async () => {
   testdouble.replace(
     ky,
     "post",
-    (_: string) => ({
+    () => ({
       json: () => ({
         data: {
           user: {
             contributionsCollection: {
               contributionCalendar: {
-                weeks: [{ contributionDays: [max] }],
+                // weeks: [{ contributionDays: [max] }],
+                weeks,
                 totalContributions,
               },
             },
@@ -191,7 +232,7 @@ Deno.test("getContributionCalendar", async () => {
 
   assertEquals(
     await getContributionCalendar("a", "a"),
-    { contributions: [[max]], totalContributions },
+    { contributions, totalContributions },
   );
 });
 
