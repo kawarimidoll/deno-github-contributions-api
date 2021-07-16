@@ -1,7 +1,9 @@
 /** Generate XML tag. */
-export default function (
+export type Attributes = { [attr: string]: string | number };
+
+export function tag(
   tagName: string,
-  attributes: { [attr: string]: string | number },
+  attributes: Attributes,
   ...children: string[]
 ): string {
   const isVoidTag = [

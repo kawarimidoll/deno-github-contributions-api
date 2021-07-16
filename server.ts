@@ -52,10 +52,9 @@ async function handleRequest(request: Request) {
     return contributions.toText({ noTotal });
   }
 
-  // const svg = Svg.render([], getColorScheme().hexColors);
-  // return new Response(svg, {
-  //   headers: { "content-type": "image/svg+xml; charset=utf-8" },
-  // });
+  if (ext === "svg") {
+    return contributions.toSvg({ scheme, noTotal, noLegend });
+  }
 
   return [
     `${contributions.totalContributions} contributions in the last year.`,
@@ -64,7 +63,7 @@ async function handleRequest(request: Request) {
     " - .json : return data as json",
     " - .term : return data as colored pixels graph (works in the terminal with true color)",
     " - .text : return data as table-styled text",
-    // " - .svg  : coming soon!",
+    " - .svg  : coming soon!",
     "",
     "You can use other parameters",
     " - no-total=true  : remove total contributions count (except type=json)",
@@ -78,7 +77,11 @@ async function handleRequest(request: Request) {
 
 addEventListener("fetch", async (event) => {
   const ext = getPathExtension(event.request);
-  const type = ext == "json" ? "application/json" : "text/plain";
+  const type = ext == "json"
+    ? "application/json"
+    : ext == "svg"
+    ? "image/svg+xml"
+    : "text/plain";
   const headers = { "content-type": `${type}; charset=utf-8` };
 
   try {

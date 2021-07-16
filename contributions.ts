@@ -1,6 +1,7 @@
 import { getColorScheme } from "./color_scheme.ts";
 import { bgRgb24, ky, rgb24, stringWidth } from "./deps.ts";
 import { hasOwnProperty } from "./utils.ts";
+import { tag as h } from "./tag.ts";
 
 interface ContributionDay {
   contributionCount: number;
@@ -189,6 +190,84 @@ const contributionsToText = (
     );
 };
 
+const contributionsToSvg = (
+  contributions: ContributionDay[][],
+  _totalContributions: number,
+  {
+    noTotal = false,
+    noLegend = false,
+    scheme = "github",
+  } = {},
+): string => {
+  const svgID = "deno-github-contributions-graph";
+  const width = 722;
+  const height = 112;
+  const rectSize = 10;
+  const rectSpan = 3;
+  const rectRadius = 2;
+  const rectStep = rectSize + rectSpan;
+
+  const rectStyle = `#${svgID} .pixel {
+    width: ${rectSize}px;
+    height: ${rectSize}px;
+    rx: ${rectRadius}px;
+    ry: ${rectRadius}px;
+    stroke: rgba(27,31,35,0.06);
+    stroke-width: 2px;
+  }`;
+
+  // These will be implemented
+  if (noTotal) {
+    noTotal = false;
+  }
+  if (noLegend) {
+    noLegend = false;
+  }
+
+  try {
+    const colorScheme = getColorScheme(scheme);
+
+    const rect = (x: number, y: number, day: ContributionDay): string =>
+      day == null ? "" : h("rect", {
+        class: `pixel ${day.contributionLevel}`,
+        x: x * rectStep,
+        y: y * rectStep,
+        "data-date": day.date,
+        "data-count": day.contributionCount,
+      });
+
+    return h(
+      "svg",
+      { width, height, xmlns: "http://www.w3.org/2000/svg", id: svgID },
+      h(
+        "style",
+        {},
+        rectStyle,
+        ...Object.entries(CONTRIBUTION_LEVELS).map(([k, v]) =>
+          `#${svgID} .${k} { fill: ${colorScheme.hexStrColors[v]}; }`
+        ),
+      ),
+      h(
+        "g",
+        { transform: `translate(10, 20)` },
+        contributions[0].map((_, i) =>
+          contributions.map((row, j) => rect(j, i, row[i])).join("")
+        ).join(""),
+      ),
+    );
+  } catch (error) {
+    return h(
+      "svg",
+      { width, height, xmlns: "http://www.w3.org/2000/svg", id: svgID },
+      h(
+        "text",
+        { y: height },
+        `${error}`,
+      ),
+    );
+  }
+};
+
 const getContributions = async (
   userName: string,
   token: string,
@@ -228,6 +307,18 @@ const getContributions = async (
     contributionsToText(contributions, totalContributions, maxContributionDay, {
       noTotal,
     });
+  const toSvg = (
+    {
+      noTotal = false,
+      noLegend = false,
+      scheme = "github",
+    } = {},
+  ) =>
+    contributionsToSvg(contributions, totalContributions, {
+      noTotal,
+      noLegend,
+      scheme,
+    });
 
   return {
     contributions,
@@ -236,6 +327,7 @@ const getContributions = async (
     toJson,
     toTerm,
     toText,
+    toSvg,
   };
 };
 
