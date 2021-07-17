@@ -208,14 +208,20 @@ const contributionsToSvg = (
   const weekCounts = 53;
   const dayCounts = 7;
 
+  const fontColor = "#000";
+  const topPadding = noTotal ? 0 : 1;
+  const bottomPadding = noLegend ? 0 : 1;
+
   const width = rectStep * (weekCounts + 2) - rectSpan;
-  const height = rectStep * (dayCounts + 3) - rectSpan + rectStep * 2;
+  const height = rectStep * (dayCounts + 2 + topPadding + bottomPadding) -
+    rectSpan;
 
-  const offset = { x: 10, y: 30 };
+  const offset = { x: rectStep, y: rectStep * (topPadding + 1) };
 
+  // the left top position of the 5 pixels of legend
   const legendPos = {
-    x: offset.x + width - rectStep * 7 - 50,
-    y: offset.y + height - rectSize * 5,
+    x: width - rectStep * 10 + rectSpan,
+    y: offset.y + rectStep * dayCounts + rectSpan,
   };
 
   const styles = `#${svgID} .pixel {
@@ -229,16 +235,9 @@ const contributionsToSvg = (
   #${svgID} text {
     font-family: monospace;
     font-size: ${rectSize * 1.5}px;
+    fill: "${fontColor}";
   }
   `;
-
-  // These will be implemented
-  if (noTotal) {
-    noTotal = false;
-  }
-  if (noLegend) {
-    noLegend = false;
-  }
 
   try {
     const colorScheme = getColorScheme(scheme);
@@ -267,12 +266,19 @@ const contributionsToSvg = (
           `#${svgID} .${k} { fill: ${colorScheme.hexStrColors[v]}; }`
         ),
       ),
+      h("rect", {
+        width,
+        height,
+        stroke: "none",
+        "stroke-width": "2px",
+        fill: "none",
+      }),
       noTotal ? "" : h(
         "g",
         {},
         h(
           "text",
-          { transform: `translate(5, 20)` },
+          { transform: `translate(${offset.x}, ${offset.y - rectSpan * 2})` },
           totalMsg(totalContributions),
         ),
       ),
@@ -288,16 +294,21 @@ const contributionsToSvg = (
         { transform: `translate(${legendPos.x}, ${legendPos.y})` },
         h(
           "text",
-          { transform: `translate(-${rectSize * 5}, ${rectSize * 1})` },
-          "Less ",
+          {
+            transform: `translate(-${rectStep * 1}, ${rectSize * 1})`,
+            "text-anchor": "end",
+          },
+          "Less",
         ),
         Object.keys(CONTRIBUTION_LEVELS).map((levelName, idx) =>
           rect(idx, 0, { contributionLevel: levelName })
         ).join(""),
         h(
           "text",
-          { transform: `translate(${rectSize * 7}, ${rectSize * 1})` },
-          " More",
+          {
+            transform: `translate(${rectStep * 5 + rectSize}, ${rectSize * 1})`,
+          },
+          "More",
         ),
       ),
     );
