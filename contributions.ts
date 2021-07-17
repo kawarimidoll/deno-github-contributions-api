@@ -192,7 +192,7 @@ const contributionsToText = (
 
 const contributionsToSvg = (
   contributions: ContributionDay[][],
-  _totalContributions: number,
+  totalContributions: number,
   {
     noTotal = false,
     noLegend = false,
@@ -200,21 +200,37 @@ const contributionsToSvg = (
   } = {},
 ): string => {
   const svgID = "deno-github-contributions-graph";
-  const width = 722;
-  const height = 112;
   const rectSize = 10;
   const rectSpan = 3;
   const rectRadius = 2;
   const rectStep = rectSize + rectSpan;
 
-  const rectStyle = `#${svgID} .pixel {
+  const weekCounts = 53;
+  const dayCounts = 7;
+
+  const width = rectStep * (weekCounts + 2) - rectSpan;
+  const height = rectStep * (dayCounts + 3) - rectSpan + rectStep * 2;
+
+  const offset = { x: 10, y: 30 };
+
+  const legendPos = {
+    x: offset.x + width - rectStep * 7 - 50,
+    y: offset.y + height - rectSize * 5,
+  };
+
+  const styles = `#${svgID} .pixel {
     width: ${rectSize}px;
     height: ${rectSize}px;
     rx: ${rectRadius}px;
     ry: ${rectRadius}px;
     stroke: rgba(27,31,35,0.06);
     stroke-width: 2px;
-  }`;
+  }
+  #${svgID} text {
+    font-family: monospace;
+    font-size: ${rectSize * 1.5}px;
+  }
+  `;
 
   // These will be implemented
   if (noTotal) {
@@ -227,13 +243,17 @@ const contributionsToSvg = (
   try {
     const colorScheme = getColorScheme(scheme);
 
-    const rect = (x: number, y: number, day: ContributionDay): string =>
-      day == null ? "" : h("rect", {
-        class: `pixel ${day.contributionLevel}`,
+    const rect = (x: number, y: number, {
+      contributionLevel = "",
+      date = "",
+      contributionCount = 0,
+    }): string =>
+      contributionLevel == null ? "" : h("rect", {
+        class: `pixel ${contributionLevel}`,
         x: x * rectStep,
         y: y * rectStep,
-        "data-date": day.date,
-        "data-count": day.contributionCount,
+        "data-date": date,
+        "data-count": contributionCount,
       });
 
     return h(
@@ -242,17 +262,43 @@ const contributionsToSvg = (
       h(
         "style",
         {},
-        rectStyle,
+        styles,
         ...Object.entries(CONTRIBUTION_LEVELS).map(([k, v]) =>
           `#${svgID} .${k} { fill: ${colorScheme.hexStrColors[v]}; }`
         ),
       ),
+      noTotal ? "" : h(
+        "g",
+        {},
+        h(
+          "text",
+          { transform: `translate(5, 20)` },
+          totalMsg(totalContributions),
+        ),
+      ),
       h(
         "g",
-        { transform: `translate(10, 20)` },
-        contributions[0].map((_, i) =>
-          contributions.map((row, j) => rect(j, i, row[i])).join("")
+        { transform: `translate(${offset.x}, ${offset.y})` },
+        contributions.map((column, i) =>
+          column.map((pixel, j) => rect(i, j, pixel)).join("")
         ).join(""),
+      ),
+      noLegend ? "" : h(
+        "g",
+        { transform: `translate(${legendPos.x}, ${legendPos.y})` },
+        h(
+          "text",
+          { transform: `translate(-${rectSize * 5}, ${rectSize * 1})` },
+          "Less ",
+        ),
+        Object.keys(CONTRIBUTION_LEVELS).map((levelName, idx) =>
+          rect(idx, 0, { contributionLevel: levelName })
+        ).join(""),
+        h(
+          "text",
+          { transform: `translate(${rectSize * 7}, ${rectSize * 1})` },
+          " More",
+        ),
       ),
     );
   } catch (error) {
