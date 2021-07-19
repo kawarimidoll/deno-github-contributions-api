@@ -21,6 +21,8 @@ $ curl https://github-contributions-api.deno.dev
 # Then follow the messages...
 ```
 
+Of course, you can access the endpoint from the web browser: https://github-contributions-api.deno.dev
+
 ### as deno module
 
 In your deno script file:
@@ -47,9 +49,8 @@ Generate your token from this page: https://github.com/settings/tokens/new
 
 - add more tests
 - add Month/Day names
-- add SVG API
-
-<!-- - add CLI version -->
+<!-- - add SVG API : Done! -->
+<!-- - add CLI version : Pending... -->
 
 ---
 
