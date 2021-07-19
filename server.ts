@@ -39,6 +39,9 @@ async function handleRequest(request: Request) {
   const noLegend = searchParams.get("no-legend") == "true";
   const flat = searchParams.get("flat") == "true";
   const invert = searchParams.get("invert") == "true";
+  const fontColor = searchParams.get("font-color") ?? "#000";
+  const frame = searchParams.get("frame") ?? "none";
+  const bg = searchParams.get("bg") ?? "none";
 
   if (ext === "json") {
     return contributions.toJson({ flat });
@@ -53,7 +56,14 @@ async function handleRequest(request: Request) {
   }
 
   if (ext === "svg") {
-    return contributions.toSvg({ scheme, noTotal, noLegend });
+    return contributions.toSvg({
+      scheme,
+      noTotal,
+      noLegend,
+      frame,
+      bg,
+      fontColor,
+    });
   }
 
   return [

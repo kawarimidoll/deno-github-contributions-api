@@ -1,6 +1,6 @@
 import { getColorScheme } from "./color_scheme.ts";
 import { bgRgb24, ky, rgb24, stringWidth } from "./deps.ts";
-import { hasOwnProperty } from "./utils.ts";
+import { confirmHex, convertToSixChars, hasOwnProperty } from "./utils.ts";
 import { tag as h } from "./tag.ts";
 
 interface ContributionDay {
@@ -197,6 +197,9 @@ const contributionsToSvg = (
     noTotal = false,
     noLegend = false,
     scheme = "github",
+    fontColor = "000",
+    frame = "none",
+    bg = "none",
   } = {},
 ): string => {
   const svgID = "deno-github-contributions-graph";
@@ -208,7 +211,6 @@ const contributionsToSvg = (
   const weekCounts = 53;
   const dayCounts = 7;
 
-  const fontColor = "#000";
   const topPadding = noTotal ? 0 : 1;
   const bottomPadding = noLegend ? 0 : 1;
 
@@ -235,7 +237,7 @@ const contributionsToSvg = (
   #${svgID} text {
     font-family: monospace;
     font-size: ${rectSize * 1.5}px;
-    fill: "${fontColor}";
+    fill: #${convertToSixChars(fontColor, "000")};
   }
   `;
 
@@ -255,6 +257,11 @@ const contributionsToSvg = (
         "data-count": contributionCount,
       });
 
+    frame = confirmHex(frame, "none");
+    const stroke = frame === "none" ? frame : "#" + convertToSixChars(frame);
+    bg = confirmHex(bg, "none");
+    const fill = bg === "none" ? bg : "#" + convertToSixChars(bg);
+
     return h(
       "svg",
       { width, height, xmlns: "http://www.w3.org/2000/svg", id: svgID },
@@ -266,13 +273,7 @@ const contributionsToSvg = (
           `#${svgID} .${k} { fill: ${colorScheme.hexStrColors[v]}; }`
         ),
       ),
-      h("rect", {
-        width,
-        height,
-        stroke: "none",
-        "stroke-width": "2px",
-        fill: "none",
-      }),
+      h("rect", { width, height, stroke, "stroke-width": "2px", fill }),
       noTotal ? "" : h(
         "g",
         {},
@@ -369,12 +370,18 @@ const getContributions = async (
       noTotal = false,
       noLegend = false,
       scheme = "github",
+      fontColor = "000",
+      frame = "none",
+      bg = "none",
     } = {},
   ) =>
     contributionsToSvg(contributions, totalContributions, {
       noTotal,
       noLegend,
       scheme,
+      fontColor,
+      frame,
+      bg,
     });
 
   return {
