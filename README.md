@@ -6,7 +6,7 @@
 [![vr scripts](https://badges.velociraptor.run/flat.svg)](https://velociraptor.run)
 [![LICENSE](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
 
-Get your GitHub contributions data powered by deno!
+Get your GitHub contributions data powered by Deno!
 
 ![gif](https://github.com/kawarimidoll/deno-github-contributions-api/raw/main/t-rec.gif)
 
@@ -21,7 +21,8 @@ $ curl https://github-contributions-api.deno.dev
 # Then follow the messages...
 ```
 
-Of course, you can access the endpoint from the web browser: https://github-contributions-api.deno.dev
+Of course, you can access the endpoint from the web browser:
+https://github-contributions-api.deno.dev
 
 ### as deno module
 
@@ -49,6 +50,7 @@ Generate your token from this page: https://github.com/settings/tokens/new
 
 - add more tests
 - add Month/Day names
+
 <!-- - add SVG API : Done! -->
 <!-- - add CLI version : Pending... -->
 

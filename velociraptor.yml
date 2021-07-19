@@ -52,10 +52,8 @@ scripts:
   ci:
     allow:
       - read
-    env:
-      VR_HOOKS: false
     cmd:
       - deno lint
       - deno fmt --check
-      - deno test -Ar
+      - deno test --reload
     desc: Runs lint, check format and test

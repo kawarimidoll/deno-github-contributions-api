@@ -91,11 +91,10 @@ async function handleRequest(request: Request) {
 
 addEventListener("fetch", async (event) => {
   const ext = getPathExtension(event.request);
-  const type = ext == "json"
-    ? "application/json"
-    : ext == "svg"
-    ? "image/svg+xml"
-    : "text/plain";
+  const type = {
+    "json": "application/json",
+    "svg": "image/svg+xml",
+  }[ext] || "text/plain";
   const headers = { "content-type": `${type}; charset=utf-8` };
 
   try {
@@ -105,8 +104,8 @@ addEventListener("fetch", async (event) => {
     console.error(error);
 
     const body = ext == "json"
-      ? JSON.stringify({ error: error.toString() })
-      : error;
+      ? JSON.stringify({ error: `${error}` })
+      : `${error}`;
     event.respondWith(
       new Response(body, {
         status: 400,
