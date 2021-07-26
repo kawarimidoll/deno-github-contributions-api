@@ -21,12 +21,12 @@ scripts:
     cmd: udd deps.ts --test="vr test"
 
   lint:
-    cmd: deno lint
     desc: Runs lint
+    cmd: deno lint --ignore=cov_profile,resources
 
   fmt:
-    cmd: deno fmt
     desc: Runs format
+    cmd: deno fmt --ignore=cov_profile,resources
 
   pre-commit:
     cmd: |
@@ -41,19 +41,26 @@ scripts:
   test:
     allow:
       - read
-    cmd: deno test --reload --coverage=cov_profile
     desc: Runs the tests
+    cmd: deno test --reload
     gitHook: pre-push
 
   cov:
-    cmd: deno coverage cov_profile
     desc: Shows uncovered lists
+    cmd:
+      - vr test --coverage=cov_profile
+      - deno coverage cov_profile
 
   ci:
-    allow:
-      - read
-    cmd:
-      - deno lint
-      - deno fmt --check
-      - deno test --reload
     desc: Runs lint, check format and test
+    cmd:
+      - vr lint
+      - vr fmt --check
+      - vr test
+
+  commitlint:
+    # dependencies: commitlint and @commitlint/config-conventional
+    # yarn global add commitlint @commitlint/config-conventional
+    desc: Checks commit messages format with commitlint
+    cmd: commitlint -x @commitlint/config-conventional -e ${GIT_ARGS[1]}
+    gitHook: commit-msg
