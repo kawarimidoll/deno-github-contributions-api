@@ -1,7 +1,6 @@
 import { getColorScheme } from "./color_scheme.ts";
-import { bgRgb24, ky, rgb24, stringWidth } from "./deps.ts";
+import { bgRgb24, h, ky, rgb24, stringWidth } from "./deps.ts";
 import { confirmHex, convertToSixChars, hasOwnProperty } from "./utils.ts";
-import { tag as h } from "./tag.ts";
 
 interface ContributionDay {
   contributionCount: number;
@@ -267,7 +266,6 @@ const contributionsToSvg = (
       { width, height, xmlns: "http://www.w3.org/2000/svg", id: svgID },
       h(
         "style",
-        {},
         styles,
         ...Object.entries(CONTRIBUTION_LEVELS).map(([k, v]) =>
           `#${svgID} .${k} { fill: ${colorScheme.hexStrColors[v]}; }`
@@ -276,7 +274,6 @@ const contributionsToSvg = (
       h("rect", { width, height, stroke, "stroke-width": "2px", fill }),
       noTotal ? "" : h(
         "g",
-        {},
         h(
           "text",
           { transform: `translate(${offset.x}, ${offset.y - rectSpan * 2})` },
