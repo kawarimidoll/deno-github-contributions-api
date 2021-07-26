@@ -9,6 +9,7 @@ import {
 import {
   ContributionDay,
   contributionsToJson,
+  contributionsToSvg,
   contributionsToTerm,
   contributionsToText,
   getContributionCalendar,
@@ -47,6 +48,28 @@ Deno.test("contributionsToJson", () => {
   assertEquals(
     contributionsToJson(contributions, totalContributions, { flat: true }),
     JSON.stringify({ contributions: contributions.flat(), totalContributions }),
+  );
+});
+
+Deno.test("contributionsToSvg", async () => {
+  const resultToSvg = await Deno.readTextFile(
+    "./resources/tests/to_svg.svg",
+  );
+  const resultToSvgWithParams = await Deno.readTextFile(
+    "./resources/tests/to_svg_bg_font_frame_scheme.svg",
+  );
+  assertEquals(
+    contributionsToSvg(contributions, totalContributions),
+    resultToSvg,
+  );
+  assertEquals(
+    contributionsToSvg(contributions, totalContributions, {
+      bg: "786688",
+      fontColor: "#d7f07b",
+      frame: "#f03153",
+      scheme: "amber",
+    }),
+    resultToSvgWithParams,
   );
 });
 

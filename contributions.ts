@@ -398,6 +398,7 @@ const getContributions = async (
 export {
   CONTRIBUTION_LEVELS,
   contributionsToJson,
+  contributionsToSvg,
   contributionsToTerm,
   contributionsToText,
   getContributionCalendar,
