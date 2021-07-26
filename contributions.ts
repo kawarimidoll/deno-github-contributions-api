@@ -254,7 +254,7 @@ const contributionsToSvg = (
         y: y * rectStep,
         "data-date": date,
         "data-count": contributionCount,
-      });
+      }, h("title", `${date}: ${contributionCount}`));
 
     frame = confirmHex(frame, "none");
     const stroke = frame === "none" ? frame : "#" + convertToSixChars(frame);
