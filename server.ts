@@ -3,6 +3,9 @@
 import { getContributions } from "./contributions.ts";
 import { env } from "./deps.ts";
 
+// cache one hour
+const CACHE_MAX_AGE = 3600;
+
 function getPathExtension(request: Request): string {
   const { pathname } = new URL(request.url);
   const split = pathname.split(".");
@@ -92,10 +95,13 @@ async function handleRequest(request: Request) {
 addEventListener("fetch", async (event) => {
   const ext = getPathExtension(event.request);
   const type = {
-    "json": "application/json",
-    "svg": "image/svg+xml",
+    json: "application/json",
+    svg: "image/svg+xml",
   }[ext] || "text/plain";
-  const headers = { "content-type": `${type}; charset=utf-8` };
+  const headers = {
+    "Content-Type": `${type}; charset=utf-8`,
+    "Cache-Control": `public, max-age=${CACHE_MAX_AGE}`,
+  };
 
   try {
     const body = await handleRequest(event.request);
