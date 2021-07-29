@@ -3,14 +3,10 @@ name: ci
 on: [push, pull_request]
 
 jobs:
-  test:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - uses: denoland/setup-deno@v1
       - uses: jurassiscripts/setup-velociraptor@v1
-      - name: Create env file
-        run: |
-          touch .env
-          echo GH_READ_USER_TOKEN=${{ secrets.GH_READ_USER_TOKEN }} >> .env
       - run: VR_HOOKS=false vr ci

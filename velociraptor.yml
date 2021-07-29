@@ -4,11 +4,10 @@ allow:
   - env
   - net
 
-envFile:
-  - .env
-
 scripts:
   main:
+    envFile:
+      - .env
     desc: Runs main script
     cmd: main.ts
 
