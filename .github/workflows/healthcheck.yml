@@ -1,0 +1,20 @@
+name: Health check
+
+on:
+  schedule:
+    - cron: 0 0/6 * * *
+  repository_dispatch:
+    types: [health_check]
+
+jobs:
+  health_check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: denoland/setup-deno@v1
+      - uses: jurassiscripts/setup-velociraptor@v1
+      - name: Create env file
+        run: |
+          touch .env
+          echo GH_READ_USER_TOKEN=${{ secrets.GH_READ_USER_TOKEN }} >> .env
+      - run: VR_HOOKS=false vr health_check

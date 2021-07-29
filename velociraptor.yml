@@ -16,6 +16,10 @@ scripts:
     desc: Starts local server
     cmd: deployctl run --libs="" --watch --env=.env server.ts
 
+  health_check:
+    desc: Runs health_check script
+    cmd: health_check.ts
+
   deps:
     desc: Update dependencies with ensuring pass tests
     cmd: udd deps.ts --test="vr test"
