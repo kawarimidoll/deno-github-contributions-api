@@ -20,15 +20,4 @@ const hexStrToRgbObj = (color: string, defaultColor = defaultPixelColor) =>
 const hexStrToHexNum = (color: string, defaultColor = defaultPixelColor) =>
   parseInt("0x" + convertToSixChars(color || defaultColor));
 
-// deno-lint-ignore no-explicit-any
-const hasOwnProperty = (obj: { [key: string]: any }, key: string): boolean => {
-  return !!(obj) && Object.prototype.hasOwnProperty.call(obj, key);
-};
-
-export {
-  confirmHex,
-  convertToSixChars,
-  hasOwnProperty,
-  hexStrToHexNum,
-  hexStrToRgbObj,
-};
+export { confirmHex, convertToSixChars, hexStrToHexNum, hexStrToRgbObj };

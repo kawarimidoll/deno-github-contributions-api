@@ -1,6 +1,6 @@
 import { getColorScheme } from "./color_scheme.ts";
 import { bgRgb24, h, ky, rgb24, stringWidth } from "./deps.ts";
-import { confirmHex, convertToSixChars, hasOwnProperty } from "./utils.ts";
+import { confirmHex, convertToSixChars } from "./utils.ts";
 
 interface ContributionDay {
   contributionCount: number;
@@ -21,7 +21,7 @@ type ContributionLevelName = keyof typeof CONTRIBUTION_LEVELS;
 const isValidContributionLevelName = (
   name?: string,
 ): name is ContributionLevelName =>
-  !!name && hasOwnProperty(CONTRIBUTION_LEVELS, name);
+  !!name && Object.hasOwn(CONTRIBUTION_LEVELS, name);
 
 const getContributionCalendar = async (
   userName: string,
@@ -67,8 +67,8 @@ const getContributionCalendar = async (
     ?.contributionCalendar;
 
   if (
-    !contributionCalendar || !hasOwnProperty(contributionCalendar, "weeks") ||
-    !hasOwnProperty(contributionCalendar, "totalContributions")
+    !contributionCalendar || !Object.hasOwn(contributionCalendar, "weeks") ||
+    !Object.hasOwn(contributionCalendar, "totalContributions")
   ) {
     throw new Error("Could not get contributions data");
   }

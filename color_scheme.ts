@@ -1,4 +1,4 @@
-import { hasOwnProperty, hexStrToHexNum } from "./utils.ts";
+import { hexStrToHexNum } from "./utils.ts";
 import {
   CONTRIBUTION_LEVELS,
   ContributionLevelName,
@@ -41,7 +41,7 @@ const COLOR_SCHEMES = {
 type ColorSchemeName = keyof typeof COLOR_SCHEMES;
 
 const isValidColorSchemeName = (name?: string): name is ColorSchemeName =>
-  !!name && hasOwnProperty(COLOR_SCHEMES, name);
+  !!name && Object.hasOwn(COLOR_SCHEMES, name);
 
 const randomColorScheme = () => {
   const values = Object.values(COLOR_SCHEMES);

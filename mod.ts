@@ -10,7 +10,6 @@ export { COLOR_SCHEMES, getColorScheme } from "./color_scheme.ts";
 export {
   confirmHex,
   convertToSixChars,
-  hasOwnProperty,
   hexStrToHexNum,
   hexStrToRgbObj,
 } from "./utils.ts";

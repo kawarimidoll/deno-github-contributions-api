@@ -2,7 +2,7 @@
 
 [![ci](https://github.com/kawarimidoll/deno-github-contributions-api/workflows/ci/badge.svg)](.github/workflows/ci.yml)
 [![deno deploy](https://img.shields.io/badge/deno-deploy-blue?logo=deno)](https://github-contributions-api.deno.dev)
-[![deno.land](https://img.shields.io/badge/deno-%5E1.0.0-green?logo=deno)](https://deno.land)
+[![deno.land](https://img.shields.io/badge/deno-%5E1.13.0-green?logo=deno)](https://deno.land)
 [![vr scripts](https://badges.velociraptor.run/flat.svg)](https://velociraptor.run)
 [![LICENSE](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
 
