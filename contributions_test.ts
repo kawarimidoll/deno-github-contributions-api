@@ -1,8 +1,8 @@
 import {
   assert,
   assertEquals,
+  assertRejects,
   assertThrows,
-  assertThrowsAsync,
   ky,
   testdouble,
 } from "./deps.ts";
@@ -164,7 +164,7 @@ Deno.test("getContributions", async () => {
     }),
   );
 
-  assertThrowsAsync(
+  assertRejects(
     () => {
       return getContributions("a", "a");
     },
@@ -202,14 +202,14 @@ Deno.test("getContributions", async () => {
 });
 
 Deno.test("getContributionCalendar", async () => {
-  assertThrowsAsync(
+  assertRejects(
     () => {
       return getContributionCalendar("userName", "");
     },
     Error,
     "Missing required arguments",
   );
-  assertThrowsAsync(
+  assertRejects(
     () => {
       return getContributionCalendar("", "token");
     },
@@ -225,7 +225,7 @@ Deno.test("getContributionCalendar", async () => {
     }),
   );
 
-  assertThrowsAsync(
+  assertRejects(
     () => {
       return getContributionCalendar("a", "a");
     },
