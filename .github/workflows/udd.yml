@@ -1,0 +1,29 @@
+name: update-deno-dependencies
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  udd:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: denoland/setup-deno@v1
+      - name: Update dependencies
+        run: >
+          deno run --allow-net --allow-read --allow-write
+          https://deno.land/x/udd/main.ts $(find . -name "*.ts")
+          --test="deno test -Ar"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: "chore(deps): update deno dependencies"
+          title: Update Deno Dependencies
+          body: >
+            Automated updates by [deno-udd](https://github.com/hayd/deno-udd)
+            and [create-pull-request](https://github.com/peter-evans/create-pull-request)
+            GitHub action
+          branch: update-deno-dependencies
+          author: GitHub <noreply@github.com>
+          delete-branch: true
