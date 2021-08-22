@@ -16,7 +16,7 @@ import {
 import { Env } from "https://deno.land/x/env@v2.2.0/env.js";
 const env = new Env();
 
-import { tag as h } from "https://deno.land/x/markup_tag@0.2.1/mod.ts";
+import { tag as h } from "https://deno.land/x/markup_tag@0.2.2/mod.ts";
 
 export {
   assert,
