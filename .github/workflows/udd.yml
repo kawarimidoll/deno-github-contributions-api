@@ -3,8 +3,6 @@ name: update-deno-dependencies
 on:
   schedule:
     - cron: "0 0 * * *"
-  push:
-    branches: [main]
 
 jobs:
   udd:
