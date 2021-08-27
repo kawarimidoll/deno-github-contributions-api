@@ -46,13 +46,14 @@ The personal access token which has a "read:user" scope is required.
 
 Generate your token from this page: https://github.com/settings/tokens/new
 
-## TODO
+## Extra
 
-- add more tests
-- add Month/Day names
+If you are using [GitHub CLI](https://github.com/cli/cli), you can call this API
+from [gh-graph](https://github.com/kawarimidoll/gh-graph).
 
-<!-- - add SVG API : Done! -->
-<!-- - add CLI version : Pending... -->
+<!-- ## TODO               -->
+<!-- - add more tests      -->
+<!-- - add Month/Day names -->
 
 ---
 
