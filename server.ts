@@ -18,14 +18,14 @@ async function handleRequest(request: Request) {
   if (pathname === "/") {
     return [
       "Welcome to deno-github-contributions-api!",
-      `Access to ${host}/[username] to get your contributions data`,
-    ].reduce((acc, current) => acc + current + "\n", "");
+      `Access to ${host}/[username] to get your contributions data.`,
+    ].join("\n");
   }
 
   const paths = pathname.split("/");
   if (paths.length > 2) {
     throw new Error(
-      `'${request.url}' is invalid path. Access to ${host}/[username]`,
+      `'${request.url}' is invalid path. Access to ${host}/[username].`,
     );
   }
   const username = paths[1].replace(/\..*$/, "");
@@ -72,7 +72,7 @@ async function handleRequest(request: Request) {
   return [
     `${contributions.totalContributions} contributions in the last year.`,
     "",
-    `Use extensions like as '${host}/${username}.text'`,
+    `Use extensions like as '${host}/${username}.text'.`,
     " - .json : return data as a json",
     " - .term : return data as a colored pixels graph (works in the terminal with true color)",
     " - .text : return data as a table-styled text",
@@ -81,15 +81,16 @@ async function handleRequest(request: Request) {
     "You can use other parameters. Each of them works on specific extensions.",
     " - no-total=true      : remove total contributions count (term/text/svg)",
     " - no-legend=true     : remove legend (term/svg)",
-    " - invert=true        : invert the background and foreground colors (term)",
+    " - invert=true        : change the background colors instead of the foreground colors (term)",
     " - flat=true          : return contributions as one-dimensional array (json)",
     " - scheme=[name]      : use specific color scheme (term/svg)",
-    " - pixel=[char]       : use the character as pixels, url encoding may required (term)",
+    " - pixel=[char]       : use the character as pixels, URL encoding is required (term)",
     " - frame=[color]      : use the color as a frame of image (svg)",
     " - bg=[color]         : use the color as a background of image (svg)",
     " - font-color=[color] : use the color as a font color (svg)",
-    "Color parameters allows hex color string without # like 123abc.",
-  ].reduce((acc, current) => acc + current + "\n", "");
+    "",
+    "Color parameters allows hex color string without # like '123abc'.",
+  ].join("\n");
 }
 
 addEventListener("fetch", async (event) => {
