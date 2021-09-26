@@ -8,7 +8,7 @@
 
 Get your GitHub contributions data powered by Deno!
 
-![gif](https://github.com/kawarimidoll/deno-github-contributions-api/raw/main/t-rec.gif)
+![gif](resources/t-rec.gif)
 
 ## Usage
 
@@ -50,6 +50,13 @@ Generate your token from this page: https://github.com/settings/tokens/new
 
 If you are using [GitHub CLI](https://github.com/cli/cli), you can call this API
 from [gh-graph](https://github.com/kawarimidoll/gh-graph).
+
+<details>
+  <summary>Acknowledgements</summary>
+  <a href="https://twitter.com/deno_land/status/1420387162206478340">
+    <img src="resources/tweet.webp" alt="tweet">
+  </a>
+</details>
 
 <!-- ## TODO               -->
 <!-- - add more tests      -->
