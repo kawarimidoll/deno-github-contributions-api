@@ -3,5 +3,8 @@
   "deno.lint": true,
   "deno.unstable": true,
   "prettier.disableLanguages": ["typescript"],
-  "typescript.format.enabled": false
+  "typescript.format.enabled": false,
+  "deno.suggest.imports.hosts": {
+    "https://deno.land/": true
+  }
 }
