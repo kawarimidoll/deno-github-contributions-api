@@ -1,4 +1,4 @@
-/// <reference path="./deploy.d.ts" />
+/// <reference path="./_deploy.d.ts" />
 
 import { getContributions } from "./contributions.ts";
 import { env } from "./deps.ts";

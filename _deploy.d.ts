@@ -139,7 +139,6 @@ declare namespace Deno {
    * Finally, you can also specify the depth to which it will format.
    *
    *      Deno.inspect({a: {b: {c: {d: 'hello'}}}}, {depth: 2}); // { a: { b: [Object] } }
-   *
    */
   export function inspect(value: unknown, options?: InspectOptions): string;
 }
@@ -546,7 +545,6 @@ declare class URLSearchParams {
    *   console.log(value, key, parent);
    * });
    * ```
-   *
    */
   forEach(
     callbackfn: (value: string, key: string, parent: this) => void,
@@ -1564,7 +1562,7 @@ declare namespace WebAssembly {
     /**
      * Given a `Module` and string, returns a copy of the contents of all custom sections in the
      * module with the given string name.
-     * */
+     */
     static customSections(
       moduleObject: Module,
       sectionName: string,
