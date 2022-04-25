@@ -1,17 +1,17 @@
 import ky from "https://cdn.skypack.dev/ky@0.28.5?dts";
 
-import testdouble from "https://esm.sh/testdouble@3.16.4/dist/testdouble.js";
+import testdouble from "https://esm.sh/testdouble@3.16.5/dist/testdouble.js";
 
 import stringWidth from "https://cdn.skypack.dev/string-width@5.0.0?dts";
 
-import { bgRgb24, rgb24 } from "https://deno.land/std@0.134.0/fmt/colors.ts";
+import { bgRgb24, rgb24 } from "https://deno.land/std@0.136.0/fmt/colors.ts";
 
 import {
   assert,
   assertEquals,
   assertRejects,
   assertThrows,
-} from "https://deno.land/std@0.134.0/testing/asserts.ts";
+} from "https://deno.land/std@0.136.0/testing/asserts.ts";
 
 import { Env } from "https://deno.land/x/env@v2.2.0/env.js";
 const env = new Env();
