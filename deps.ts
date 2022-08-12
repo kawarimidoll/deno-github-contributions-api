@@ -4,16 +4,16 @@ import testdouble from "https://esm.sh/testdouble@3.16.6/dist/testdouble.js";
 
 import stringWidth from "https://cdn.skypack.dev/string-width@5.0.0?dts";
 
-import { bgRgb24, rgb24 } from "https://deno.land/std@0.148.0/fmt/colors.ts";
+import { bgRgb24, rgb24 } from "https://deno.land/std@0.152.0/fmt/colors.ts";
 
 import {
   assert,
   assertEquals,
   assertRejects,
   assertThrows,
-} from "https://deno.land/std@0.148.0/testing/asserts.ts";
+} from "https://deno.land/std@0.152.0/testing/asserts.ts";
 
-import { Env } from "https://deno.land/x/env@v2.2.0/env.js";
+import { Env } from "https://deno.land/x/env@v2.2.1/env.js";
 const env = new Env();
 
 import { tag as h } from "https://deno.land/x/markup_tag@0.3.0/mod.ts";
