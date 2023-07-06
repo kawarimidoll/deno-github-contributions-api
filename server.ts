@@ -31,9 +31,16 @@ async function handleRequest(request: Request) {
   const username = paths[1].replace(/\..*$/, "");
   const ext = getPathExtension(request);
 
+  const toYmd = searchParams.get("to") ?? null;
+  const fromYmd = searchParams.get("from") ?? null;
+  const from = fromYmd ? new Date(fromYmd).toISOString() : null;
+  const to = toYmd ? new Date(toYmd).toISOString() : null;
+
   const contributions = await getContributions(
     username,
     env.require("GH_READ_USER_TOKEN"),
+    from,
+    to
   );
 
   const scheme = searchParams.get("scheme") ?? "github";
@@ -88,6 +95,8 @@ async function handleRequest(request: Request) {
     " - frame=[color]      : use the color as a frame of image (svg)",
     " - bg=[color]         : use the color as a background of image (svg)",
     " - font-color=[color] : use the color as a font color (svg)",
+    " - from=[yyyy-mm-dd]  : get contributions from the date (term/text/svg/json)",
+    " - to=[yyyy-mm-dd]    : get contributions to the date (term/text/svg/json)",
     "",
     "Color parameters allows hex color string without # like '123abc'.",
   ].join("\n");
