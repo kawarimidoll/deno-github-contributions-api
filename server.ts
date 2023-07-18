@@ -33,14 +33,13 @@ async function handleRequest(request: Request) {
 
   const toYmd = searchParams.get("to") ?? null;
   const fromYmd = searchParams.get("from") ?? null;
-  const from = fromYmd ? new Date(fromYmd).toISOString() : null;
-  const to = toYmd ? new Date(toYmd).toISOString() : null;
+  const from = fromYmd ? new Date(fromYmd).toISOString() : undefined;
+  const to = toYmd ? new Date(toYmd).toISOString() : undefined;
 
   const contributions = await getContributions(
     username,
     env.require("GH_READ_USER_TOKEN"),
-    from,
-    to,
+    { from, to },
   );
 
   const scheme = searchParams.get("scheme") ?? "github";
