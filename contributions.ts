@@ -59,7 +59,9 @@ const getContributionCalendar = async (
   const { data } = await ky.post(url, {
     headers: { Authorization: `Bearer ${token}` },
     json,
-  }).json();
+    // FIXME: need proper type
+    // deno-lint-ignore no-explicit-any
+  }).json() as any;
 
   const contributionCalendar = data?.user?.contributionsCollection
     ?.contributionCalendar;
