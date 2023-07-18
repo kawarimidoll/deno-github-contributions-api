@@ -26,8 +26,8 @@ const isValidContributionLevelName = (
 const getContributionCalendar = async (
   userName: string,
   token: string,
-  from: string|null,
-  to: string|null,
+  from: string | null,
+  to: string | null,
 ) => {
   if (!userName || !token) {
     throw new Error("Missing required arguments");
@@ -52,7 +52,7 @@ const getContributionCalendar = async (
    }
  }
  `;
-  const variables = JSON.stringify({userName, from, to});
+  const variables = JSON.stringify({ userName, from, to });
 
   const json = { query, variables };
   const url = "https://api.github.com/graphql";
@@ -324,14 +324,14 @@ const contributionsToSvg = (
 const getContributions = async (
   userName: string,
   token: string,
-  from: string|null,
-  to: string|null
+  from: string | null,
+  to: string | null,
 ) => {
   const { contributions, totalContributions } = await getContributionCalendar(
     userName,
     token,
     from,
-    to
+    to,
   );
 
   const maxContributionDay = getMaxContributionDay(contributions);

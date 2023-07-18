@@ -40,7 +40,7 @@ async function handleRequest(request: Request) {
     username,
     env.require("GH_READ_USER_TOKEN"),
     from,
-    to
+    to,
   );
 
   const scheme = searchParams.get("scheme") ?? "github";
