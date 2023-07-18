@@ -23,15 +23,20 @@ const isValidContributionLevelName = (
 ): name is ContributionLevelName =>
   !!name && Object.hasOwn(CONTRIBUTION_LEVELS, name);
 
+type ContributionOptions = {
+  from?: string;
+  to?: string;
+};
+
 const getContributionCalendar = async (
   userName: string,
   token: string,
-  from: string | null,
-  to: string | null,
+  contributionOptions: ContributionOptions = {},
 ) => {
   if (!userName || !token) {
     throw new Error("Missing required arguments");
   }
+  const { from, to } = contributionOptions;
 
   const query = `
  query($userName:String! $from:DateTime $to:DateTime) {
@@ -326,14 +331,13 @@ const contributionsToSvg = (
 const getContributions = async (
   userName: string,
   token: string,
-  from: string | null,
-  to: string | null,
+  contributionOptions: ContributionOptions = {},
 ) => {
+  const { from, to } = contributionOptions;
   const { contributions, totalContributions } = await getContributionCalendar(
     userName,
     token,
-    from,
-    to,
+    { from, to },
   );
 
   const maxContributionDay = getMaxContributionDay(contributions);
@@ -410,4 +414,4 @@ export {
   totalMsg,
 };
 
-export type { ContributionDay, ContributionLevelName };
+export type { ContributionDay, ContributionLevelName, ContributionOptions };
