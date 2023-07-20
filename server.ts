@@ -1,5 +1,5 @@
 import { getContributions } from "./contributions.ts";
-import { env, serve } from "./deps.ts";
+import { env, outdent, serve } from "./deps.ts";
 
 // cache one hour
 const CACHE_MAX_AGE = 3600;
@@ -73,30 +73,30 @@ async function handleRequest(request: Request) {
     });
   }
 
-  return [
-    `${contributions.totalContributions} contributions in the last year.`,
-    "",
-    `Use extensions like as '${host}/${username}.text'.`,
-    " - .json : return data as a json",
-    " - .term : return data as a colored pixels graph (works in the terminal with true color)",
-    " - .text : return data as a table-styled text",
-    " - .svg  : return data as a svg image",
-    "",
-    "You can use other parameters. Each of them works on specific extensions.",
-    " - no-total=true      : remove total contributions count (term/text/svg)",
-    " - no-legend=true     : remove legend (term/svg)",
-    " - invert=true        : change the background colors instead of the foreground colors (term)",
-    " - flat=true          : return contributions as one-dimensional array (json)",
-    " - scheme=[name]      : use specific color scheme (term/svg)",
-    " - pixel=[char]       : use the character as pixels, URL encoding is required (term)",
-    " - frame=[color]      : use the color as a frame of image (svg)",
-    " - bg=[color]         : use the color as a background of image (svg)",
-    " - font-color=[color] : use the color as a font color (svg)",
-    " - from=[yyyy-mm-dd]  : get contributions from the date (term/text/svg/json)",
-    " - to=[yyyy-mm-dd]    : get contributions to the date (term/text/svg/json)",
-    "",
-    "Color parameters allows hex color string without # like '123abc'.",
-  ].join("\n");
+  return outdent`
+    ${contributions.totalContributions} contributions in the last year.
+
+    Use extensions like as '${host}/${username}.text'.
+     - .json : return data as a json
+     - .term : return data as a colored pixels graph (works in the terminal with true color)
+     - .text : return data as a table-styled text
+     - .svg  : return data as a svg image
+
+    You can use other parameters. Each of them works on specific extensions.
+     - no-total=true      : remove total contributions count (term/text/svg)
+     - no-legend=true     : remove legend (term/svg)
+     - invert=true        : change the background colors instead of the foreground colors (term)
+     - flat=true          : return contributions as one-dimensional array (json)
+     - scheme=[name]      : use specific color scheme (term/svg)
+     - pixel=[char]       : use the character as pixels, URL encoding is required (term)
+     - frame=[color]      : use the color as a frame of image (svg)
+     - bg=[color]         : use the color as a background of image (svg)
+     - font-color=[color] : use the color as a font color (svg)
+     - from=[yyyy-mm-dd]  : get contributions from the date (term/text/svg/json)
+     - to=[yyyy-mm-dd]    : get contributions to the date (term/text/svg/json)
+
+    Color parameters allows hex color string without # like '123abc'.
+  `;
 }
 
 serve(async (request: Request) => {

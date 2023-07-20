@@ -17,6 +17,8 @@ import { serve } from "https://deno.land/std@0.194.0/http/server.ts";
 import { Env } from "https://deno.land/x/env@v2.2.3/env.js";
 const env = new Env();
 
+import { outdent } from "https://deno.land/x/outdent@v0.8.0/mod.ts";
+
 import { tag as h } from "https://deno.land/x/markup_tag@0.4.0/mod.ts";
 
 export {
@@ -28,6 +30,7 @@ export {
   env,
   h,
   ky,
+  outdent,
   rgb24,
   serve,
   stringWidth,
