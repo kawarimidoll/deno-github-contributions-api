@@ -1,19 +1,18 @@
 allow:
   # - write
-  # - read
-  - env
+  - read
+  - env=GH_READ_USER_TOKEN
   - net
 
 scripts:
   main:
-    envFile:
-      - .env
     desc: Runs main script
     cmd: main.ts
 
   server:
     desc: Starts local server
-    cmd: deployctl run --libs="" --watch --env=.env server.ts
+    watch: true
+    cmd: server.ts
 
   health_check:
     desc: Runs health_check script
@@ -42,8 +41,8 @@ scripts:
     gitHook: pre-commit
 
   test:
-    allow:
-      - read
+    # allow:
+    #   - read
     desc: Runs the tests
     cmd: deno test --reload
     gitHook: pre-push
