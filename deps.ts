@@ -14,8 +14,13 @@ import {
 } from "https://deno.land/std@0.194.0/testing/asserts.ts";
 import { serve } from "https://deno.land/std@0.194.0/http/server.ts";
 
-import { Env } from "https://deno.land/x/env@v2.2.3/env.js";
-const env = new Env();
+import { loadSync } from "https://deno.land/std@0.194.0/dotenv/mod.ts";
+loadSync({
+  export: true,
+  examplePath: null,
+  defaultsPath: null,
+  restrictEnvAccessTo: ["GH_READ_USER_TOKEN"],
+});
 
 import { outdent } from "https://deno.land/x/outdent@v0.8.0/mod.ts";
 
@@ -27,7 +32,6 @@ export {
   assertRejects,
   assertThrows,
   bgRgb24,
-  env,
   h,
   ky,
   outdent,

@@ -1,5 +1,5 @@
 import { getContributions } from "./contributions.ts";
-import { env, outdent, serve } from "./deps.ts";
+import { outdent, serve } from "./deps.ts";
 
 // cache one hour
 const CACHE_MAX_AGE = 3600;
@@ -36,7 +36,7 @@ async function handleRequest(request: Request) {
 
   const contributions = await getContributions(
     username,
-    env.require("GH_READ_USER_TOKEN"),
+    Deno.env.get("GH_READ_USER_TOKEN") || "",
     { from, to },
   );
 
