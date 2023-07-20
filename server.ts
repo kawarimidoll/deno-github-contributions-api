@@ -1,7 +1,5 @@
-/// <reference path="./_deploy.d.ts" />
-
 import { getContributions } from "./contributions.ts";
-import { env } from "./deps.ts";
+import { env, serve } from "./deps.ts";
 
 // cache one hour
 const CACHE_MAX_AGE = 3600;
@@ -101,8 +99,8 @@ async function handleRequest(request: Request) {
   ].join("\n");
 }
 
-addEventListener("fetch", async (event) => {
-  const ext = getPathExtension(event.request);
+serve(async (request: Request) => {
+  const ext = getPathExtension(request);
   const type = {
     json: "application/json",
     svg: "image/svg+xml",
@@ -113,19 +111,17 @@ addEventListener("fetch", async (event) => {
   };
 
   try {
-    const body = await handleRequest(event.request);
-    event.respondWith(new Response(body, { headers }));
+    const body = await handleRequest(request);
+    return (new Response(body, { headers }));
   } catch (error) {
     console.error(error);
 
     const body = ext == "json"
       ? JSON.stringify({ error: `${error}` })
       : `${error}`;
-    event.respondWith(
-      new Response(body, {
-        status: 400,
-        headers,
-      }),
-    );
+    return (new Response(body, {
+      status: 400,
+      headers,
+    }));
   }
 });

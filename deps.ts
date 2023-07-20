@@ -12,6 +12,7 @@ import {
   assertRejects,
   assertThrows,
 } from "https://deno.land/std@0.194.0/testing/asserts.ts";
+import { serve } from "https://deno.land/std@0.194.0/http/server.ts";
 
 import { Env } from "https://deno.land/x/env@v2.2.3/env.js";
 const env = new Env();
@@ -28,6 +29,7 @@ export {
   h,
   ky,
   rgb24,
+  serve,
   stringWidth,
   testdouble,
 };
