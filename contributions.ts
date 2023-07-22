@@ -2,12 +2,12 @@ import { getColorScheme } from "./color_scheme.ts";
 import { bgRgb24, h, ky, rgb24, stringWidth } from "./deps.ts";
 import { confirmHex, convertToSixChars } from "./utils.ts";
 
-interface ContributionDay {
+type ContributionDay = {
   contributionCount: number;
   contributionLevel: ContributionLevelName;
   date: string;
   color: string;
-}
+};
 
 const CONTRIBUTION_LEVELS = {
   NONE: 0,
