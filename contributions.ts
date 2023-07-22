@@ -28,6 +28,21 @@ type ContributionOptions = {
   to?: string;
 };
 
+type ContributionResponse = {
+  data: {
+    user: {
+      contributionsCollection: {
+        contributionCalendar: {
+          totalContributions: number;
+          weeks: {
+            contributionDays: ContributionDay[];
+          }[];
+        };
+      };
+    };
+  };
+};
+
 const getContributionCalendar = async (
   userName: string,
   token: string,
@@ -64,9 +79,7 @@ const getContributionCalendar = async (
   const { data } = await ky.post(url, {
     headers: { Authorization: `Bearer ${token}` },
     json,
-    // FIXME: need proper type
-    // deno-lint-ignore no-explicit-any
-  }).json() as any;
+  }).json() as ContributionResponse;
 
   const contributionCalendar = data?.user?.contributionsCollection
     ?.contributionCalendar;
@@ -414,4 +427,9 @@ export {
   totalMsg,
 };
 
-export type { ContributionDay, ContributionLevelName, ContributionOptions };
+export type {
+  ContributionDay,
+  ContributionLevelName,
+  ContributionOptions,
+  ContributionResponse,
+};
