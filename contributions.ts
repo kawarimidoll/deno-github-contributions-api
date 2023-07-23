@@ -102,7 +102,7 @@ const getContributionCalendar = async (
 };
 
 const totalMsg = (totalNum: number): string =>
-  totalNum + " contributions in the last year\n";
+  `${totalNum} contributions in the last year`;
 
 const moreContributionDay = (a: ContributionDay, b: ContributionDay) =>
   a.contributionCount > b.contributionCount ? a : b;
@@ -154,7 +154,7 @@ const contributionsToTerm = (
 
   const colorScheme = getColorScheme(scheme);
 
-  const total = !noTotal ? totalMsg(totalContributions) : "";
+  const total = !noTotal ? `${totalMsg(totalContributions)}\n` : "";
 
   // 10 is length of 'Less  More'
   // 5 is count of colored pixels as legend
@@ -192,7 +192,7 @@ const contributionsToText = (
     noTotal = false,
   } = {},
 ) => {
-  const total = !noTotal ? totalMsg(totalContributions) : "";
+  const total = !noTotal ? `${totalMsg(totalContributions)}\n` : "";
 
   const pad = String(maxContributionDay.contributionCount).length;
 
