@@ -1,5 +1,5 @@
 import { getContributions, totalMsg } from "./contributions.ts";
-import { outdent, serve } from "./deps.ts";
+import { outdent } from "./deps.ts";
 
 // cache one hour
 const CACHE_MAX_AGE = 3600;
@@ -99,7 +99,7 @@ async function handleRequest(request: Request) {
   `;
 }
 
-serve(async (request: Request) => {
+Deno.serve(async (request: Request) => {
   const ext = getPathExtension(request);
   const type = {
     json: "application/json",
