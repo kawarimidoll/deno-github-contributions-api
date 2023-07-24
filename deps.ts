@@ -12,7 +12,6 @@ import {
   assertRejects,
   assertThrows,
 } from "https://deno.land/std@0.194.0/testing/asserts.ts";
-import { serve } from "https://deno.land/std@0.194.0/http/server.ts";
 
 import { loadSync } from "https://deno.land/std@0.194.0/dotenv/mod.ts";
 loadSync({
@@ -36,7 +35,6 @@ export {
   ky,
   outdent,
   rgb24,
-  serve,
   stringWidth,
   testdouble,
 };
