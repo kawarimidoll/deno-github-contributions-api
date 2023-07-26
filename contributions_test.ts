@@ -291,5 +291,5 @@ Deno.test("moreContributionDay", () => {
 });
 
 Deno.test("totalMsg", () => {
-  assertEquals(totalMsg(10), "10 contributions in the last year\n");
+  assertEquals(totalMsg(10), "10 contributions in the last year");
 });

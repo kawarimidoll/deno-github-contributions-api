@@ -1,8 +1,7 @@
 import { getContributions } from "./contributions.ts";
-import { env } from "./deps.ts";
 
 const username = "kawarimidoll";
-const token = env.require("GH_READ_USER_TOKEN");
+const token = Deno.env.get("GH_READ_USER_TOKEN") || "";
 
 const contributions = await getContributions(username, token);
 

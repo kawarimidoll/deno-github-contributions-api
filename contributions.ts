@@ -2,12 +2,12 @@ import { getColorScheme } from "./color_scheme.ts";
 import { bgRgb24, h, ky, rgb24, stringWidth } from "./deps.ts";
 import { confirmHex, convertToSixChars } from "./utils.ts";
 
-interface ContributionDay {
+type ContributionDay = {
   contributionCount: number;
   contributionLevel: ContributionLevelName;
   date: string;
   color: string;
-}
+};
 
 const CONTRIBUTION_LEVELS = {
   NONE: 0,
@@ -23,18 +23,40 @@ const isValidContributionLevelName = (
 ): name is ContributionLevelName =>
   !!name && Object.hasOwn(CONTRIBUTION_LEVELS, name);
 
+type ContributionOptions = {
+  from?: string;
+  to?: string;
+};
+
+type ContributionResponse = {
+  data: {
+    user: {
+      contributionsCollection: {
+        contributionCalendar: {
+          totalContributions: number;
+          weeks: {
+            contributionDays: ContributionDay[];
+          }[];
+        };
+      };
+    };
+  };
+};
+
 const getContributionCalendar = async (
   userName: string,
   token: string,
+  contributionOptions: ContributionOptions = {},
 ) => {
   if (!userName || !token) {
     throw new Error("Missing required arguments");
   }
+  const { from, to } = contributionOptions;
 
   const query = `
- query($userName:String!) {
+ query($userName:String! $from:DateTime $to:DateTime) {
    user(login: $userName){
-     contributionsCollection {
+     contributionsCollection(from: $from, to: $to) {
        contributionCalendar {
          totalContributions
          weeks {
@@ -50,18 +72,14 @@ const getContributionCalendar = async (
    }
  }
  `;
-  const variables = `
- {
-   "userName": "${userName}"
- }
- `;
+  const variables = JSON.stringify({ userName, from, to });
 
   const json = { query, variables };
   const url = "https://api.github.com/graphql";
   const { data } = await ky.post(url, {
     headers: { Authorization: `Bearer ${token}` },
     json,
-  }).json();
+  }).json() as ContributionResponse;
 
   const contributionCalendar = data?.user?.contributionsCollection
     ?.contributionCalendar;
@@ -84,7 +102,7 @@ const getContributionCalendar = async (
 };
 
 const totalMsg = (totalNum: number): string =>
-  totalNum + " contributions in the last year\n";
+  `${totalNum} contributions in the last year`;
 
 const moreContributionDay = (a: ContributionDay, b: ContributionDay) =>
   a.contributionCount > b.contributionCount ? a : b;
@@ -136,7 +154,7 @@ const contributionsToTerm = (
 
   const colorScheme = getColorScheme(scheme);
 
-  const total = !noTotal ? totalMsg(totalContributions) : "";
+  const total = !noTotal ? `${totalMsg(totalContributions)}\n` : "";
 
   // 10 is length of 'Less  More'
   // 5 is count of colored pixels as legend
@@ -174,7 +192,7 @@ const contributionsToText = (
     noTotal = false,
   } = {},
 ) => {
-  const total = !noTotal ? totalMsg(totalContributions) : "";
+  const total = !noTotal ? `${totalMsg(totalContributions)}\n` : "";
 
   const pad = String(maxContributionDay.contributionCount).length;
 
@@ -326,10 +344,13 @@ const contributionsToSvg = (
 const getContributions = async (
   userName: string,
   token: string,
+  contributionOptions: ContributionOptions = {},
 ) => {
+  const { from, to } = contributionOptions;
   const { contributions, totalContributions } = await getContributionCalendar(
     userName,
     token,
+    { from, to },
   );
 
   const maxContributionDay = getMaxContributionDay(contributions);
@@ -405,4 +426,10 @@ export {
   moreContributionDay,
   totalMsg,
 };
-export type { ContributionDay, ContributionLevelName };
+
+export type {
+  ContributionDay,
+  ContributionLevelName,
+  ContributionOptions,
+  ContributionResponse,
+};

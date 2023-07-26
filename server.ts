@@ -1,7 +1,5 @@
-/// <reference path="./_deploy.d.ts" />
-
-import { getContributions } from "./contributions.ts";
-import { env } from "./deps.ts";
+import { getContributions, totalMsg } from "./contributions.ts";
+import { outdent } from "./deps.ts";
 
 // cache one hour
 const CACHE_MAX_AGE = 3600;
@@ -31,9 +29,15 @@ async function handleRequest(request: Request) {
   const username = paths[1].replace(/\..*$/, "");
   const ext = getPathExtension(request);
 
+  const toYmd = searchParams.get("to") ?? null;
+  const fromYmd = searchParams.get("from") ?? null;
+  const from = fromYmd ? new Date(fromYmd).toISOString() : undefined;
+  const to = toYmd ? new Date(toYmd).toISOString() : undefined;
+
   const contributions = await getContributions(
     username,
-    env.require("GH_READ_USER_TOKEN"),
+    Deno.env.get("GH_READ_USER_TOKEN") || "",
+    { from, to },
   );
 
   const scheme = searchParams.get("scheme") ?? "github";
@@ -69,32 +73,34 @@ async function handleRequest(request: Request) {
     });
   }
 
-  return [
-    `${contributions.totalContributions} contributions in the last year.`,
-    "",
-    `Use extensions like as '${host}/${username}.text'.`,
-    " - .json : return data as a json",
-    " - .term : return data as a colored pixels graph (works in the terminal with true color)",
-    " - .text : return data as a table-styled text",
-    " - .svg  : return data as a svg image",
-    "",
-    "You can use other parameters. Each of them works on specific extensions.",
-    " - no-total=true      : remove total contributions count (term/text/svg)",
-    " - no-legend=true     : remove legend (term/svg)",
-    " - invert=true        : change the background colors instead of the foreground colors (term)",
-    " - flat=true          : return contributions as one-dimensional array (json)",
-    " - scheme=[name]      : use specific color scheme (term/svg)",
-    " - pixel=[char]       : use the character as pixels, URL encoding is required (term)",
-    " - frame=[color]      : use the color as a frame of image (svg)",
-    " - bg=[color]         : use the color as a background of image (svg)",
-    " - font-color=[color] : use the color as a font color (svg)",
-    "",
-    "Color parameters allows hex color string without # like '123abc'.",
-  ].join("\n");
+  return outdent`
+    ${totalMsg(contributions.totalContributions)}.
+
+    Use extensions like as '${host}/${username}.text'.
+     - .json : return data as a json
+     - .term : return data as a colored pixels graph (works in the terminal with true color)
+     - .text : return data as a table-styled text
+     - .svg  : return data as a svg image
+
+    You can use other parameters. Each of them works on specific extensions.
+     - no-total=true      : remove total contributions count (term/text/svg)
+     - no-legend=true     : remove legend (term/svg)
+     - invert=true        : change the background colors instead of the foreground colors (term)
+     - flat=true          : return contributions as one-dimensional array (json)
+     - scheme=[name]      : use specific color scheme (term/svg)
+     - pixel=[char]       : use the character as pixels, URL encoding is required (term)
+     - frame=[color]      : use the color as a frame of image (svg)
+     - bg=[color]         : use the color as a background of image (svg)
+     - font-color=[color] : use the color as a font color (svg)
+     - from=[yyyy-mm-dd]  : get contributions from the date (term/text/svg/json)
+     - to=[yyyy-mm-dd]    : get contributions to the date (term/text/svg/json)
+
+    Color parameters allows hex color string without # like '123abc'.
+  `;
 }
 
-addEventListener("fetch", async (event) => {
-  const ext = getPathExtension(event.request);
+Deno.serve(async (request: Request) => {
+  const ext = getPathExtension(request);
   const type = {
     json: "application/json",
     svg: "image/svg+xml",
@@ -106,19 +112,17 @@ addEventListener("fetch", async (event) => {
   };
 
   try {
-    const body = await handleRequest(event.request);
-    event.respondWith(new Response(body, { headers }));
+    const body = await handleRequest(request);
+    return (new Response(body, { headers }));
   } catch (error) {
     console.error(error);
 
     const body = ext == "json"
       ? JSON.stringify({ error: `${error}` })
       : `${error}`;
-    event.respondWith(
-      new Response(body, {
-        status: 400,
-        headers,
-      }),
-    );
+    return (new Response(body, {
+      status: 400,
+      headers,
+    }));
   }
 });
