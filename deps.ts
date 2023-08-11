@@ -4,16 +4,16 @@ import testdouble from "https://esm.sh/testdouble@3.18.0/dist/testdouble.js";
 
 import stringWidth from "https://cdn.skypack.dev/string-width@5.0.0?dts";
 
-import { bgRgb24, rgb24 } from "https://deno.land/std@0.197.0/fmt/colors.ts";
+import { bgRgb24, rgb24 } from "https://deno.land/std@0.198.0/fmt/colors.ts";
 
 import {
   assert,
   assertEquals,
   assertRejects,
   assertThrows,
-} from "https://deno.land/std@0.197.0/testing/asserts.ts";
+} from "https://deno.land/std@0.198.0/testing/asserts.ts";
 
-import { loadSync } from "https://deno.land/std@0.197.0/dotenv/mod.ts";
+import { loadSync } from "https://deno.land/std@0.198.0/dotenv/mod.ts";
 loadSync({
   export: true,
   examplePath: null,
