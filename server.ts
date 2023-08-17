@@ -108,6 +108,7 @@ Deno.serve(async (request: Request) => {
   const headers = {
     "Content-Type": `${type}; charset=utf-8`,
     "Cache-Control": `public, max-age=${CACHE_MAX_AGE}`,
+    "Access-Control-Allow-Origin": "*",
   };
 
   try {
