@@ -1,4 +1,11 @@
 {
+  "imports": {
+    "@std/assert": "jsr:@std/assert@^1.0.0",
+    "@std/fmt/colors": "jsr:@std/fmt@^1.0.0/colors",
+    "@kawarimidoll/markup-tag": "jsr:@kawarimidoll/markup-tag@^1.0.0",
+    "string-width": "npm:string-width@^5.0.0",
+    "outdent": "jsr:@okikio/undent@^0.2.0"
+  },
   "tasks": {
     // common permissions
     "_run": "deno run --env --allow-read --allow-env=GH_READ_USER_TOKEN --allow-net",
@@ -7,8 +14,8 @@
     "dev": "deno task _run --watch server.ts",
     "serve": "deno task _run server.ts",
     "health_check": "deno task _run health_check.ts",
-    "test": "deno test --env --allow-read --allow-env=GH_READ_USER_TOKEN --allow-net --allow-import --reload",
-    "cov": "deno test --env --allow-read --allow-env=GH_READ_USER_TOKEN --allow-net --allow-import --coverage=cov_profile && deno coverage cov_profile",
+    "test": "deno test --env --allow-read --allow-env=GH_READ_USER_TOKEN --allow-net --reload",
+    "cov": "deno test --env --allow-read --allow-env=GH_READ_USER_TOKEN --allow-net --coverage=cov_profile && deno coverage cov_profile",
     "ci": "deno lint && deno fmt --check && deno task test"
   },
   "exclude": [

@@ -1,5 +1,7 @@
 import { getColorScheme } from "./color_scheme.ts";
-import { bgRgb24, h, rgb24, stringWidth } from "./deps.ts";
+import { bgRgb24, rgb24 } from "@std/fmt/colors";
+import { tag as h } from "@kawarimidoll/markup-tag";
+import stringWidth from "string-width";
 import { confirmHex, convertToSixChars } from "./utils.ts";
 
 type ContributionDay = {

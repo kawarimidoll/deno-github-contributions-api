@@ -1,5 +1,5 @@
 import { getContributions, totalMsg } from "./contributions.ts";
-import { outdent } from "./deps.ts";
+import { outdent } from "outdent";
 
 // cache one hour
 const CACHE_MAX_AGE = 3600;

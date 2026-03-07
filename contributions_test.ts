@@ -1,9 +1,4 @@
-import {
-  assert,
-  assertEquals,
-  assertRejects,
-  assertThrows,
-} from "./deps.ts";
+import { assert, assertEquals, assertRejects, assertThrows } from "@std/assert";
 import {
   ContributionDay,
   contributionsToJson,
