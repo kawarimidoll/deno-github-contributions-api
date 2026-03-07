@@ -99,7 +99,7 @@ async function handleRequest(request: Request) {
   `;
 }
 
-Deno.serve(async (request: Request) => {
+Deno.serve(async (request) => {
   const ext = getPathExtension(request);
   const type = {
     json: "application/json",
@@ -113,16 +113,13 @@ Deno.serve(async (request: Request) => {
 
   try {
     const body = await handleRequest(request);
-    return (new Response(body, { headers }));
+    return new Response(body, { headers });
   } catch (error) {
     console.error(error);
 
-    const body = ext == "json"
+    const body = ext === "json"
       ? JSON.stringify({ error: `${error}` })
       : `${error}`;
-    return (new Response(body, {
-      status: 400,
-      headers,
-    }));
+    return new Response(body, { status: 400, headers });
   }
 });
