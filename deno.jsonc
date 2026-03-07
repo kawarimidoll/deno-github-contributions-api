@@ -7,7 +7,7 @@
     "dev": "deno task _run --watch server.ts",
     "serve": "deno task _run server.ts",
     "health_check": "deno task _run health_check.ts",
-    "test": "deno test --allow-read --allow-env=GH_READ_USER_TOKEN --allow-net --reload",
+    "test": "deno test --allow-read --allow-env=GH_READ_USER_TOKEN --allow-net --allow-import --reload",
     "cov": "deno test --allow-read --allow-env=GH_READ_USER_TOKEN --allow-net --coverage=cov_profile && deno coverage cov_profile",
     "ci": "deno lint && deno fmt --check && deno task test"
   },

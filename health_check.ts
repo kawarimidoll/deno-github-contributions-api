@@ -1,34 +1,23 @@
-import { ky } from "./deps.ts";
+const baseUrl = "https://github-contributions-api.deno.dev";
 
-const prefixUrl = "https://github-contributions-api.deno.dev";
-const k = ky.create({ prefixUrl });
+async function check(label: string, path: string) {
+  console.log(label);
+  const res = await fetch(`${baseUrl}/${path}`);
+  if (!res.ok) throw new Error(`${label} failed: ${res.status}`);
+  await res.text();
+}
+
 try {
-  console.log("Root");
-  await k("").text();
-
-  console.log("User");
-  await k("kawarimidoll").text();
-
-  console.log("Text");
-  await k("kawarimidoll.text").text();
-
-  console.log("Json");
-  await k("kawarimidoll.json").text();
-
-  console.log("Term");
-  await k("kawarimidoll.term").text();
-
-  console.log("Svg");
-  await k("kawarimidoll.svg").text();
-
-  console.log("Parameters");
-  await k("kawarimidoll.svg", {
-    searchParams: {
-      scheme: "random",
-      "no-total": true,
-      bg: "123abc",
-    },
-  }).text();
+  await check("Root", "");
+  await check("User", "kawarimidoll");
+  await check("Text", "kawarimidoll.text");
+  await check("Json", "kawarimidoll.json");
+  await check("Term", "kawarimidoll.term");
+  await check("Svg", "kawarimidoll.svg");
+  await check(
+    "Parameters",
+    "kawarimidoll.svg?scheme=random&no-total=true&bg=123abc",
+  );
 
   console.log("System all green!");
 } catch (error) {
