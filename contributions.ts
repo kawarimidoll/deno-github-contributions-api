@@ -1,5 +1,7 @@
 import { getColorScheme } from "./color_scheme.ts";
-import { bgRgb24, h, ky, rgb24, stringWidth } from "./deps.ts";
+import { bgRgb24, rgb24 } from "@std/fmt/colors";
+import { tag as h } from "@kawarimidoll/markup-tag";
+import stringWidth from "string-width";
 import { confirmHex, convertToSixChars } from "./utils.ts";
 
 type ContributionDay = {
@@ -74,12 +76,16 @@ const getContributionCalendar = async (
  `;
   const variables = JSON.stringify({ userName, from, to });
 
-  const json = { query, variables };
   const url = "https://api.github.com/graphql";
-  const { data } = await ky.post(url, {
-    headers: { Authorization: `Bearer ${token}` },
-    json,
-  }).json() as ContributionResponse;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query, variables }),
+  });
+  const { data } = await res.json() as ContributionResponse;
 
   const contributionCalendar = data?.user?.contributionsCollection
     ?.contributionCalendar;

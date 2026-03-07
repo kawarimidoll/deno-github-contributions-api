@@ -1,4 +1,4 @@
-import { assert, assertEquals, assertThrows } from "./deps.ts";
+import { assert, assertEquals, assertThrows } from "@std/assert";
 import {
   COLOR_SCHEMES,
   getColorScheme,

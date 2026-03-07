@@ -1,11 +1,4 @@
-import {
-  assert,
-  assertEquals,
-  assertRejects,
-  assertThrows,
-  ky,
-  testdouble,
-} from "./deps.ts";
+import { assert, assertEquals, assertRejects, assertThrows } from "@std/assert";
 import {
   ContributionDay,
   contributionsToJson,
@@ -156,40 +149,28 @@ Deno.test("contributionsToText", async () => {
 });
 
 Deno.test("getContributions", async () => {
-  testdouble.replace(
-    ky,
-    "post",
-    (_: string) => ({
-      json: () => ({ data: null }),
-    }),
-  );
+  const originalFetch = globalThis.fetch;
 
-  assertRejects(
-    () => {
-      return getContributions("a", "a");
-    },
+  globalThis.fetch = () => Promise.resolve(Response.json({ data: null }));
+
+  await assertRejects(
+    () => getContributions("a", "a"),
     Error,
     "Could not get contributions data",
   );
 
-  testdouble.replace(
-    ky,
-    "post",
-    () => ({
-      json: () => ({
+  globalThis.fetch = () =>
+    Promise.resolve(
+      Response.json({
         data: {
           user: {
             contributionsCollection: {
-              contributionCalendar: {
-                weeks,
-                totalContributions,
-              },
+              contributionCalendar: { weeks, totalContributions },
             },
           },
         },
       }),
-    }),
-  );
+    );
 
   const obj = await getContributions("a", "a");
   assert(obj);
@@ -199,64 +180,51 @@ Deno.test("getContributions", async () => {
   assert(obj.toJson());
   assert(obj.toTerm());
   assert(obj.toText());
+
+  globalThis.fetch = originalFetch;
 });
 
 Deno.test("getContributionCalendar", async () => {
-  assertRejects(
-    () => {
-      return getContributionCalendar("userName", "");
-    },
+  const originalFetch = globalThis.fetch;
+
+  await assertRejects(
+    () => getContributionCalendar("userName", ""),
     Error,
     "Missing required arguments",
   );
-  assertRejects(
-    () => {
-      return getContributionCalendar("", "token");
-    },
+  await assertRejects(
+    () => getContributionCalendar("", "token"),
     Error,
     "Missing required arguments",
   );
 
-  testdouble.replace(
-    ky,
-    "post",
-    (_: string) => ({
-      json: () => ({ data: null }),
-    }),
-  );
+  globalThis.fetch = () => Promise.resolve(Response.json({ data: null }));
 
-  assertRejects(
-    () => {
-      return getContributionCalendar("a", "a");
-    },
+  await assertRejects(
+    () => getContributionCalendar("a", "a"),
     Error,
     "Could not get contributions data",
   );
 
-  testdouble.replace(
-    ky,
-    "post",
-    () => ({
-      json: () => ({
+  globalThis.fetch = () =>
+    Promise.resolve(
+      Response.json({
         data: {
           user: {
             contributionsCollection: {
-              contributionCalendar: {
-                // weeks: [{ contributionDays: [max] }],
-                weeks,
-                totalContributions,
-              },
+              contributionCalendar: { weeks, totalContributions },
             },
           },
         },
       }),
-    }),
-  );
+    );
 
   assertEquals(
     await getContributionCalendar("a", "a"),
     { contributions, totalContributions },
   );
+
+  globalThis.fetch = originalFetch;
 });
 
 Deno.test("getMaxContributionDay", () => {
