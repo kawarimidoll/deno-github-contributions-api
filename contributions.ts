@@ -74,7 +74,7 @@ const getContributionCalendar = async (
    }
  }
  `;
-  const variables = JSON.stringify({ userName, from, to });
+  const variables = { userName, from, to };
 
   const url = "https://api.github.com/graphql";
   const res = await fetch(url, {
