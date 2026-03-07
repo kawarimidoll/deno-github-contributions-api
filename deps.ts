@@ -9,14 +9,6 @@ import {
   assertThrows,
 } from "https://deno.land/std@0.201.0/testing/asserts.ts";
 
-import { loadSync } from "https://deno.land/std@0.201.0/dotenv/mod.ts";
-loadSync({
-  export: true,
-  examplePath: null,
-  defaultsPath: null,
-  restrictEnvAccessTo: ["GH_READ_USER_TOKEN"],
-});
-
 import { outdent } from "https://deno.land/x/outdent@v0.8.0/mod.ts";
 
 import { tag as h } from "https://deno.land/x/markup_tag@0.4.0/mod.ts";
