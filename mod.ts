@@ -11,7 +11,6 @@ export {
   confirmHex,
   convertToSixChars,
   hexStrToHexNum,
-  hexStrToRgbObj,
 } from "./utils.ts";
 
 // types and interfaces

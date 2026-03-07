@@ -42,10 +42,10 @@ async function handleRequest(request: Request) {
 
   const scheme = searchParams.get("scheme") ?? "github";
   const pixel = searchParams.get("pixel") ?? undefined;
-  const noTotal = searchParams.get("no-total") == "true";
-  const noLegend = searchParams.get("no-legend") == "true";
-  const flat = searchParams.get("flat") == "true";
-  const invert = searchParams.get("invert") == "true";
+  const noTotal = searchParams.get("no-total") === "true";
+  const noLegend = searchParams.get("no-legend") === "true";
+  const flat = searchParams.get("flat") === "true";
+  const invert = searchParams.get("invert") === "true";
   const fontColor = searchParams.get("font-color") ?? "#000";
   const frame = searchParams.get("frame") ?? "none";
   const bg = searchParams.get("bg") ?? "none";
