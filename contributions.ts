@@ -107,8 +107,16 @@ const getContributionCalendar = async (
   return { contributions, totalContributions };
 };
 
-const totalMsg = (totalNum: number): string =>
-  `${totalNum} contributions in the last year`;
+const totalMsg = (
+  totalNum: number,
+  { from, to }: { from?: string; to?: string } = {},
+): string => {
+  const parts = [`${totalNum} contributions`];
+  if (from) parts.push(`from ${from}`);
+  if (to) parts.push(`to ${to}`);
+  if (!from && !to) parts.push("in the last year");
+  return parts.join(" ");
+};
 
 const moreContributionDay = (a: ContributionDay, b: ContributionDay) =>
   a.contributionCount > b.contributionCount ? a : b;
@@ -142,7 +150,7 @@ const contributionsToJson = (
 
 const contributionsToTerm = (
   contributions: ContributionDay[][],
-  totalContributions: number,
+  totalMessage: string,
   {
     noTotal = false,
     noLegend = false,
@@ -160,7 +168,7 @@ const contributionsToTerm = (
 
   const colorScheme = getColorScheme(scheme);
 
-  const total = !noTotal ? `${totalMsg(totalContributions)}\n` : "";
+  const total = !noTotal ? `${totalMessage}\n` : "";
 
   // 10 is length of 'Less  More'
   // 5 is count of colored pixels as legend
@@ -192,13 +200,13 @@ const contributionsToTerm = (
 
 const contributionsToText = (
   contributions: ContributionDay[][],
-  totalContributions: number,
+  totalMessage: string,
   maxContributionDay: ContributionDay,
   {
     noTotal = false,
   } = {},
 ) => {
-  const total = !noTotal ? `${totalMsg(totalContributions)}\n` : "";
+  const total = !noTotal ? `${totalMessage}\n` : "";
 
   const pad = String(maxContributionDay.contributionCount).length;
 
@@ -215,7 +223,7 @@ const contributionsToText = (
 
 const contributionsToSvg = (
   contributions: ContributionDay[][],
-  totalContributions: number,
+  totalMessage: string,
   {
     noTotal = false,
     noLegend = false,
@@ -242,7 +250,7 @@ const contributionsToSvg = (
   const charWidth = rectSize * 1.5 * 0.6;
   const totalTextWidth = noTotal
     ? 0
-    : totalMsg(totalContributions).length * charWidth + rectStep * 2;
+    : totalMessage.length * charWidth + rectStep * 2;
   // legend: "Less" + 5 pixels + "More" + surrounding padding
   const legendMinWidth = noLegend ? 0 : rectStep * 12;
   const width = Math.max(graphWidth, totalTextWidth, legendMinWidth);
@@ -309,7 +317,7 @@ const contributionsToSvg = (
         h(
           "text",
           { transform: `translate(${offset.x}, ${offset.y - rectSpan * 2})` },
-          totalMsg(totalContributions),
+          totalMessage,
         ),
       ),
       h(
@@ -366,8 +374,13 @@ const getContributions = async (
     token,
     { from, to },
   );
+  const dateRange = {
+    from: from?.slice(0, 10),
+    to: to?.slice(0, 10),
+  };
 
   const maxContributionDay = getMaxContributionDay(contributions);
+  const totalMessage = totalMsg(totalContributions, dateRange);
 
   const toJson = ({ flat = false } = {}) =>
     contributionsToJson(contributions, totalContributions, { flat });
@@ -381,7 +394,7 @@ const getContributions = async (
       invert = false,
     } = {},
   ) =>
-    contributionsToTerm(contributions, totalContributions, {
+    contributionsToTerm(contributions, totalMessage, {
       noTotal,
       noLegend,
       scheme,
@@ -394,7 +407,7 @@ const getContributions = async (
       noTotal = false,
     } = {},
   ) =>
-    contributionsToText(contributions, totalContributions, maxContributionDay, {
+    contributionsToText(contributions, totalMessage, maxContributionDay, {
       noTotal,
     });
   const toSvg = (
@@ -407,7 +420,7 @@ const getContributions = async (
       bg = "none",
     } = {},
   ) =>
-    contributionsToSvg(contributions, totalContributions, {
+    contributionsToSvg(contributions, totalMessage, {
       noTotal,
       noLegend,
       scheme,
@@ -419,6 +432,7 @@ const getContributions = async (
   return {
     contributions,
     totalContributions,
+    totalMessage,
     maxContributionDay,
     toJson,
     toTerm,

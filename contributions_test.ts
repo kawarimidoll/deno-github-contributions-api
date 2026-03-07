@@ -23,6 +23,7 @@ const {
   await Deno.readTextFile("./resources/tests/example_contributions.json"),
 );
 
+const totalMessage = totalMsg(totalContributions);
 const weeks = contributions.map((week) => ({ contributionDays: week }));
 
 const max: ContributionDay = {
@@ -52,11 +53,11 @@ Deno.test("contributionsToSvg", async () => {
     "./resources/tests/to_svg_bg_font_frame_scheme.svg",
   );
   assertEquals(
-    contributionsToSvg(contributions, totalContributions),
+    contributionsToSvg(contributions, totalMessage),
     resultToSvg,
   );
   assertEquals(
-    contributionsToSvg(contributions, totalContributions, {
+    contributionsToSvg(contributions, totalMessage, {
       bg: "786688",
       fontColor: "#d7f07b",
       frame: "#f03153",
@@ -86,11 +87,11 @@ Deno.test("contributionsToTerm", async () => {
     "./resources/tests/to_term_invert.text",
   );
   assertEquals(
-    contributionsToTerm(contributions, totalContributions),
+    contributionsToTerm(contributions, totalMessage),
     resultToTerm,
   );
   assertEquals(
-    contributionsToTerm(contributions, totalContributions, {
+    contributionsToTerm(contributions, totalMessage, {
       noTotal: false,
       noLegend: false,
       scheme: "github",
@@ -100,31 +101,31 @@ Deno.test("contributionsToTerm", async () => {
     resultToTerm,
   );
   assertEquals(
-    contributionsToTerm(contributions, totalContributions, {
+    contributionsToTerm(contributions, totalMessage, {
       scheme: "unicorn",
     }),
     resultToTermUnicorn,
   );
   assertEquals(
-    contributionsToTerm(contributions, totalContributions, { noTotal: true }),
+    contributionsToTerm(contributions, totalMessage, { noTotal: true }),
     resultToTermNoTotal,
   );
   assertEquals(
-    contributionsToTerm(contributions, totalContributions, { noLegend: true }),
+    contributionsToTerm(contributions, totalMessage, { noLegend: true }),
     resultToTermNoLegend,
   );
   assertEquals(
-    contributionsToTerm(contributions, totalContributions, { pixel: "x" }),
+    contributionsToTerm(contributions, totalMessage, { pixel: "x" }),
     resultToTermPixelX,
   );
   assertThrows(
     () => {
-      contributionsToTerm(contributions, totalContributions, { pixel: "xxx" });
+      contributionsToTerm(contributions, totalMessage, { pixel: "xxx" });
     },
     Error,
   );
   assertEquals(
-    contributionsToTerm(contributions, totalContributions, { invert: true }),
+    contributionsToTerm(contributions, totalMessage, { invert: true }),
     resultToTermInvert,
   );
 });
@@ -137,11 +138,11 @@ Deno.test("contributionsToText", async () => {
     "./resources/tests/to_text_no_total.text",
   );
   assertEquals(
-    contributionsToText(contributions, totalContributions, max),
+    contributionsToText(contributions, totalMessage, max),
     resultToText,
   );
   assertEquals(
-    contributionsToText(contributions, totalContributions, max, {
+    contributionsToText(contributions, totalMessage, max, {
       noTotal: true,
     }),
     resultToTextNoTotal,
@@ -260,4 +261,16 @@ Deno.test("moreContributionDay", () => {
 
 Deno.test("totalMsg", () => {
   assertEquals(totalMsg(10), "10 contributions in the last year");
+  assertEquals(
+    totalMsg(10, { from: "2025-01-01", to: "2025-03-01" }),
+    "10 contributions from 2025-01-01 to 2025-03-01",
+  );
+  assertEquals(
+    totalMsg(10, { from: "2025-01-01" }),
+    "10 contributions from 2025-01-01",
+  );
+  assertEquals(
+    totalMsg(10, { to: "2025-03-01" }),
+    "10 contributions to 2025-03-01",
+  );
 });

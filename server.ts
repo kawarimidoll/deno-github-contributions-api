@@ -1,4 +1,4 @@
-import { getContributions, totalMsg } from "./contributions.ts";
+import { getContributions } from "./contributions.ts";
 import { outdent } from "outdent";
 
 // cache one hour
@@ -74,7 +74,7 @@ async function handleRequest(request: Request) {
   }
 
   return outdent`
-    ${totalMsg(contributions.totalContributions)}.
+    ${contributions.totalMessage}.
 
     Use extensions like as '${host}/${username}.text'.
      - .json : return data as a json
