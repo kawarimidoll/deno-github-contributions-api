@@ -6,10 +6,19 @@ on:
   repository_dispatch:
     types: [health_check]
 
+permissions: {}
+
+concurrency:
+  group: health-check
+  cancel-in-progress: true
+
 jobs:
   health_check:
+    name: Health check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - uses: denoland/setup-deno@v1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: denoland/setup-deno@e95548e56dfa95d4e1a28d6f422fafe75c4c26fb # v2.0.3
       - run: deno task health_check
