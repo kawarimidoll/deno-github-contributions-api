@@ -1,5 +1,6 @@
 !.vim
-!.env.example
+!.envrc.example
+.envrc
 *.log
 *.vscode/
 cov_profile

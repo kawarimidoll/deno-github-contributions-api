@@ -2,8 +2,6 @@
 
 [![ci](https://github.com/kawarimidoll/deno-github-contributions-api/workflows/ci/badge.svg)](.github/workflows/ci.yml)
 [![deno deploy](https://img.shields.io/badge/deno-deploy-blue?logo=deno)](https://github-contributions-api.deno.dev)
-[![deno.land](https://img.shields.io/badge/deno-%5E1.13.0-green?logo=deno)](https://deno.land)
-[![vr scripts](https://badges.velociraptor.run/flat.svg)](https://velociraptor.run)
 [![LICENSE](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
 
 Get your GitHub contributions data powered by Deno!
@@ -45,6 +43,27 @@ You can see an example in
 The personal access token which has a "read:user" scope is required.
 
 Generate your token from this page: https://github.com/settings/tokens/new
+
+## Local Development
+
+1. Copy `.envrc.example` to `.envrc` and set your GitHub personal access token:
+
+```sh
+cp .envrc.example .envrc
+# Edit .envrc and set your token
+```
+
+2. Load environment variables with [direnv](https://direnv.net/):
+
+```sh
+direnv allow
+```
+
+3. Start the development server:
+
+```sh
+deno task dev
+```
 
 ## Extra
 
