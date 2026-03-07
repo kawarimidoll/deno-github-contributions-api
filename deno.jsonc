@@ -9,13 +9,14 @@
   "tasks": {
     // common permissions
     "_run": "deno run --allow-read --allow-env=GH_READ_USER_TOKEN --allow-net",
+    "_test": "deno test --allow-read --allow-env=GH_READ_USER_TOKEN --allow-net",
 
     "main": "deno task _run main.ts",
     "dev": "deno task _run --watch server.ts",
     "serve": "deno task _run server.ts",
     "health_check": "deno task _run health_check.ts",
-    "test": "deno test --allow-read --allow-env=GH_READ_USER_TOKEN --allow-net --reload",
-    "cov": "deno test --allow-read --allow-env=GH_READ_USER_TOKEN --allow-net --coverage=cov_profile && deno coverage cov_profile",
+    "test": "deno task _test --reload",
+    "cov": "deno task _test --coverage=cov_profile && deno coverage cov_profile",
     "ci": "deno lint && deno fmt --check && deno task test"
   },
   "exclude": [
