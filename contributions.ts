@@ -231,13 +231,21 @@ const contributionsToSvg = (
   const rectRadius = 2;
   const rectStep = rectSize + rectSpan;
 
-  const weekCounts = 53;
+  const weekCounts = contributions.length;
   const dayCounts = 7;
 
   const topPadding = noTotal ? 0 : 1;
   const bottomPadding = noLegend ? 0 : 1;
 
-  const width = rectStep * (weekCounts + 2) - rectSpan;
+  const graphWidth = rectStep * (weekCounts + 2) - rectSpan;
+  // estimate text width: monospace at rectSize*1.5 px, ~0.6em per character
+  const charWidth = rectSize * 1.5 * 0.6;
+  const totalTextWidth = noTotal
+    ? 0
+    : totalMsg(totalContributions).length * charWidth + rectStep * 2;
+  // legend: "Less" + 5 pixels + "More" + surrounding padding
+  const legendMinWidth = noLegend ? 0 : rectStep * 12;
+  const width = Math.max(graphWidth, totalTextWidth, legendMinWidth);
   const height = rectStep * (dayCounts + 2 + topPadding + bottomPadding) -
     rectSpan;
 
