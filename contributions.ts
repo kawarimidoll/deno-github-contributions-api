@@ -4,6 +4,7 @@ import { tag as h } from "@kawarimidoll/markup-tag";
 import stringWidth from "string-width";
 import { confirmHex, convertToSixChars } from "./utils.ts";
 
+/** A single day's contribution data including count, level, date, and color. */
 type ContributionDay = {
   contributionCount: number;
   contributionLevel: ContributionLevelName;
@@ -19,6 +20,7 @@ const CONTRIBUTION_LEVELS = {
   THIRD_QUARTILE: 3,
   FOURTH_QUARTILE: 4,
 };
+/** Name of a contribution level: "NONE" | "FIRST_QUARTILE" | "SECOND_QUARTILE" | "THIRD_QUARTILE" | "FOURTH_QUARTILE". */
 type ContributionLevelName = keyof typeof CONTRIBUTION_LEVELS;
 
 /** Returns true if the given string is a valid ContributionLevelName. */
@@ -48,6 +50,7 @@ type ContributionResponse = {
   };
 };
 
+/** Result of {@linkcode getContributions}, with data and format methods. */
 type Contributions = {
   contributions: ContributionDay[][];
   totalContributions: number;

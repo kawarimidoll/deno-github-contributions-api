@@ -39,6 +39,7 @@ const COLOR_SCHEMES = {
   // by kawarimidoll
   gameboy: ["#eeeeee", "#ccdc5f", "#91a633", "#606520", "#2c370b"],
 };
+/** Name of an available color scheme. */
 type ColorSchemeName = keyof typeof COLOR_SCHEMES;
 
 type ColorScheme = {
