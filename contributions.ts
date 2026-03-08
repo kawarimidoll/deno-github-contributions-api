@@ -36,10 +36,10 @@ type ContributionOptions = {
 };
 
 type ContributionResponse = {
-  data: {
-    user: {
-      contributionsCollection: {
-        contributionCalendar: {
+  data?: {
+    user?: {
+      contributionsCollection?: {
+        contributionCalendar?: {
           totalContributions: number;
           weeks: {
             contributionDays: ContributionDay[];
@@ -48,6 +48,7 @@ type ContributionResponse = {
       };
     };
   };
+  errors?: { message: string; type?: string }[];
 };
 
 /** Result of {@linkcode getContributions}, with data and format methods. */
@@ -119,7 +120,11 @@ async function getContributionCalendar(
     },
     body: JSON.stringify({ query, variables }),
   });
-  const { data } = await res.json() as ContributionResponse;
+  const { data, errors } = await res.json() as ContributionResponse;
+
+  if (errors?.length) {
+    throw new Error(errors.map((e) => e.message).join("; "));
+  }
 
   const contributionCalendar = data?.user?.contributionsCollection
     ?.contributionCalendar;
