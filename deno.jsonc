@@ -17,7 +17,7 @@
     "health_check": "deno task _run health_check.ts",
     "test": "deno task _test --reload",
     "cov": "deno task _test --coverage=cov_profile && deno coverage cov_profile",
-    "ci": "deno lint && deno fmt --check && deno task test"
+    "ci": "deno lint && deno fmt --check && deno task test && deno publish --dry-run --allow-dirty"
   },
   "exclude": [
     "cov_profile",
