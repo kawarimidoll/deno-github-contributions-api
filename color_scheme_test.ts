@@ -19,7 +19,11 @@ Deno.test("getColorScheme", () => {
   assertEquals(scheme2.getByLevel(), 0xeeeeee);
 
   const scheme3 = getColorScheme("random");
-  assert(Object.values(COLOR_SCHEMES).includes(scheme3.hexStrColors));
+  assert(
+    Object.values(COLOR_SCHEMES).some((colors) =>
+      colors.every((c, i) => c === scheme3.hexStrColors[i])
+    ),
+  );
 
   assertThrows(() => {
     getColorScheme("123456");

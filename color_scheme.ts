@@ -5,6 +5,12 @@ import {
   isValidContributionLevelName,
 } from "./contributions.ts";
 
+/** A hex color string (e.g. `"#ff0000"`). */
+type HexColor = `#${string}`;
+
+/** A 5-element tuple of hex colors representing NONE through FOURTH_QUARTILE contribution levels. */
+type ColorSchemeColors = [HexColor, HexColor, HexColor, HexColor, HexColor];
+
 /** Mapping of all available color scheme names to their 5-level hex color arrays. */
 const COLOR_SCHEMES = {
   // by [williambelle/github-contribution-color-graph](https://github.com/williambelle/github-contribution-color-graph)
@@ -38,12 +44,12 @@ const COLOR_SCHEMES = {
 
   // by kawarimidoll
   gameboy: ["#eeeeee", "#ccdc5f", "#91a633", "#606520", "#2c370b"],
-};
+} satisfies Record<string, ColorSchemeColors>;
 /** Name of an available color scheme. */
 type ColorSchemeName = keyof typeof COLOR_SCHEMES;
 
 type ColorScheme = {
-  hexStrColors: string[];
+  hexStrColors: ColorSchemeColors;
   hexNumColors: number[];
   getByLevel: (levelName?: ContributionLevelName) => number;
 };
@@ -55,7 +61,7 @@ function isValidColorSchemeName(name?: string): name is ColorSchemeName {
   return !!name && Object.hasOwn(COLOR_SCHEMES, name);
 }
 
-function randomColorScheme(): string[] {
+function randomColorScheme(): ColorSchemeColors {
   const values = Object.values(COLOR_SCHEMES);
   return values[(Math.random() * values.length) << 0];
 }
