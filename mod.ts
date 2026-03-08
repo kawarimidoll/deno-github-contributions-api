@@ -1,3 +1,16 @@
+/**
+ * Fetch and render GitHub contributions data as JSON, SVG, terminal text, or plain text.
+ *
+ * ```ts
+ * import { getContributions } from "@kawarimidoll/github-contributions-api";
+ *
+ * const contributions = await getContributions("username", "ghp_token");
+ * console.log(contributions.toTerm({ scheme: "github" }));
+ * ```
+ *
+ * @module
+ */
+
 export {
   CONTRIBUTION_LEVELS,
   getContributions,
