@@ -6,7 +6,8 @@
 [![deno deploy](https://img.shields.io/badge/deno-deploy-blue?logo=deno)](https://github-contributions-api.deno.dev)
 [![LICENSE](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
 
-Fetch and render GitHub contributions data as JSON, SVG, terminal text, or plain text.
+Fetch and render GitHub contributions data as JSON, SVG, terminal text, or plain
+text.
 
 ![gif](resources/t-rec.gif)
 
@@ -37,8 +38,8 @@ console.log(contributions.toTerm({ scheme: "random" }));
 
 You can also specify a date range with `from` / `to` options.
 
-A personal access token with the `read:user` scope is required.
-Generate one here: https://github.com/settings/tokens/new
+A personal access token with the `read:user` scope is required. Generate one
+here: https://github.com/settings/tokens/new
 
 ## Local Development
 
