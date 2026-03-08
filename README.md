@@ -1,16 +1,18 @@
 # deno-github-contributions-api
 
+[![JSR](https://jsr.io/badges/@kawarimidoll/github-contributions-api)](https://jsr.io/@kawarimidoll/github-contributions-api)
+[![JSR Score](https://jsr.io/badges/@kawarimidoll/github-contributions-api/score)](https://jsr.io/@kawarimidoll/github-contributions-api)
 [![ci](https://github.com/kawarimidoll/deno-github-contributions-api/workflows/ci/badge.svg)](.github/workflows/ci.yml)
 [![deno deploy](https://img.shields.io/badge/deno-deploy-blue?logo=deno)](https://github-contributions-api.deno.dev)
 [![LICENSE](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
 
-Get your GitHub contributions data powered by Deno!
+Fetch and render GitHub contributions data as JSON, SVG, terminal text, or plain text.
 
 ![gif](resources/t-rec.gif)
 
 ## Usage
 
-### as API
+### As an API
 
 In your terminal:
 
@@ -22,27 +24,21 @@ $ curl https://github-contributions-api.deno.dev
 Of course, you can access the endpoint from the web browser:
 https://github-contributions-api.deno.dev
 
-### as deno module
-
-In your deno script file:
+### As a library
 
 ```ts
-import { getContributions } from "https://github.com/kawarimidoll/deno-github-contributions-api/raw/main/mod.ts";
+import { getContributions } from "jsr:@kawarimidoll/github-contributions-api";
 
-const username = "your-github-username";
-const token = "xxxxxxxxxxxxxxxxxxxxxxx";
-
-const contributions = await getContributions(username, token);
+const contributions = await getContributions("username", "ghp_token");
 
 console.log(contributions.toTerm({ scheme: "random" }));
+// Also available: toJson(), toText(), toSvg()
 ```
 
-You can see an example in
-[main.ts](https://github.com/kawarimidoll/deno-github-contributions-api/blob/main/main.ts)
+You can also specify a date range with `from` / `to` options.
 
-The personal access token which has a "read:user" scope is required.
-
-Generate your token from this page: https://github.com/settings/tokens/new
+A personal access token with the `read:user` scope is required.
+Generate one here: https://github.com/settings/tokens/new
 
 ## Local Development
 
@@ -76,10 +72,6 @@ from [gh-graph](https://github.com/kawarimidoll/gh-graph).
     <img src="resources/tweet.webp" alt="tweet">
   </a>
 </details>
-
-<!-- ## TODO               -->
-<!-- - add more tests      -->
-<!-- - add Month/Day names -->
 
 ---
 
