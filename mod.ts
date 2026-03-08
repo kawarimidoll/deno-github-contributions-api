@@ -11,11 +11,7 @@
  * @module
  */
 
-export {
-  CONTRIBUTION_LEVELS,
-  getContributions,
-  isValidContributionLevelName,
-} from "./contributions.ts";
+export { CONTRIBUTION_LEVELS, getContributions } from "./contributions.ts";
 
 export { COLOR_SCHEMES, getColorScheme } from "./color_scheme.ts";
 
