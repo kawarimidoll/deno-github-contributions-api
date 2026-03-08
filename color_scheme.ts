@@ -11,8 +11,41 @@ type HexColor = `#${string}`;
 /** A 5-element tuple of hex colors representing NONE through FOURTH_QUARTILE contribution levels. */
 type ColorSchemeColors = [HexColor, HexColor, HexColor, HexColor, HexColor];
 
+/** Name of an available color scheme. */
+// NOTE: Defined explicitly because JSR requires explicit types for public API symbols.
+// When adding a new color scheme, add its name here too.
+type ColorSchemeName =
+  | "github"
+  | "halloween"
+  | "amber"
+  | "blue"
+  | "bluegrey"
+  | "brown"
+  | "cyan"
+  | "deeporange"
+  | "deeppurple"
+  | "green"
+  | "grey"
+  | "indigo"
+  | "lightblue"
+  | "lightgreen"
+  | "lime"
+  | "orange"
+  | "pink"
+  | "purple"
+  | "red"
+  | "teal"
+  | "yellowMd"
+  | "unicorn"
+  | "summer"
+  | "sunset"
+  | "moon"
+  | "psychedelic"
+  | "yellow"
+  | "gameboy";
+
 /** Mapping of all available color scheme names to their 5-level hex color arrays. */
-const COLOR_SCHEMES = {
+const COLOR_SCHEMES: Record<ColorSchemeName, ColorSchemeColors> = {
   // by [williambelle/github-contribution-color-graph](https://github.com/williambelle/github-contribution-color-graph)
   github: ["#eeeeee", "#9be9a8", "#40c463", "#30a14e", "#216e39"],
   halloween: ["#eeeeee", "#fdf156", "#ffc722", "#ff9711", "#04001b"],
@@ -44,9 +77,7 @@ const COLOR_SCHEMES = {
 
   // by kawarimidoll
   gameboy: ["#eeeeee", "#ccdc5f", "#91a633", "#606520", "#2c370b"],
-} satisfies Record<string, ColorSchemeColors>;
-/** Name of an available color scheme. */
-type ColorSchemeName = keyof typeof COLOR_SCHEMES;
+};
 
 type ColorScheme = {
   hexStrColors: ColorSchemeColors;
