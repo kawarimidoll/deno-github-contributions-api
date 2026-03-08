@@ -28,4 +28,4 @@ jobs:
         run: |
           sed -i "s/\"version\": \"0.0.0\"/\"version\": \"${RELEASE_TAG}\"/" deno.jsonc
       - run: deno task ci
-      - run: deno publish
+      - run: deno publish --allow-dirty
