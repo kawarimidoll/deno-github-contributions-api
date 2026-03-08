@@ -1,6 +1,6 @@
 import { assert, assertEquals, assertRejects, assertThrows } from "@std/assert";
 import {
-  ContributionDay,
+  type ContributionDay,
   contributionsToJson,
   contributionsToSvg,
   contributionsToTerm,

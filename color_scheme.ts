@@ -1,10 +1,11 @@
 import { hexStrToHexNum } from "./utils.ts";
 import {
   CONTRIBUTION_LEVELS,
-  ContributionLevelName,
+  type ContributionLevelName,
   isValidContributionLevelName,
 } from "./contributions.ts";
 
+/** Mapping of all available color scheme names to their 5-level hex color arrays. */
 const COLOR_SCHEMES = {
   // by [williambelle/github-contribution-color-graph](https://github.com/williambelle/github-contribution-color-graph)
   github: ["#eeeeee", "#9be9a8", "#40c463", "#30a14e", "#216e39"],
@@ -40,16 +41,29 @@ const COLOR_SCHEMES = {
 };
 type ColorSchemeName = keyof typeof COLOR_SCHEMES;
 
-const isValidColorSchemeName = (name?: string): name is ColorSchemeName =>
-  !!name && Object.hasOwn(COLOR_SCHEMES, name);
-
-const randomColorScheme = () => {
-  const values = Object.values(COLOR_SCHEMES);
-  return values[(Math.random() * values.length) << 0];
+type ColorScheme = {
+  hexStrColors: string[];
+  hexNumColors: number[];
+  getByLevel: (levelName?: ContributionLevelName) => number;
 };
 
-const getColorScheme = (name = "github") => {
-  if (name != "random" && !isValidColorSchemeName(name)) {
+/**
+ * Returns true if `name` is a valid color scheme name.
+ */
+function isValidColorSchemeName(name?: string): name is ColorSchemeName {
+  return !!name && Object.hasOwn(COLOR_SCHEMES, name);
+}
+
+function randomColorScheme(): string[] {
+  const values = Object.values(COLOR_SCHEMES);
+  return values[(Math.random() * values.length) << 0];
+}
+
+/**
+ * Returns the color scheme for the given name, or a random one if `"random"` is passed.
+ */
+function getColorScheme(name = "github"): ColorScheme {
+  if (name !== "random" && !isValidColorSchemeName(name)) {
     throw new Error(
       `'${name}' is invalid color scheme name! Choose from: ${
         Object.keys(COLOR_SCHEMES)
@@ -63,7 +77,7 @@ const getColorScheme = (name = "github") => {
 
   const hexNumColors = hexStrColors.map((color) => hexStrToHexNum(color));
 
-  const getByLevel = (levelName?: ContributionLevelName) =>
+  const getByLevel = (levelName?: ContributionLevelName): number =>
     hexNumColors[
       isValidContributionLevelName(levelName)
         ? CONTRIBUTION_LEVELS[levelName]
@@ -71,7 +85,7 @@ const getColorScheme = (name = "github") => {
     ];
 
   return { hexStrColors, hexNumColors, getByLevel };
-};
+}
 
 export { COLOR_SCHEMES, getColorScheme, isValidColorSchemeName };
 export type { ColorSchemeName };

@@ -11,6 +11,7 @@ type ContributionDay = {
   color: string;
 };
 
+/** Mapping of contribution level names to their numeric values. */
 const CONTRIBUTION_LEVELS = {
   NONE: 0,
   FIRST_QUARTILE: 1,
@@ -20,10 +21,12 @@ const CONTRIBUTION_LEVELS = {
 };
 type ContributionLevelName = keyof typeof CONTRIBUTION_LEVELS;
 
-const isValidContributionLevelName = (
+/** Returns true if the given string is a valid ContributionLevelName. */
+function isValidContributionLevelName(
   name?: string,
-): name is ContributionLevelName =>
-  !!name && Object.hasOwn(CONTRIBUTION_LEVELS, name);
+): name is ContributionLevelName {
+  return !!name && Object.hasOwn(CONTRIBUTION_LEVELS, name);
+}
 
 type ContributionOptions = {
   from?: string;
@@ -45,11 +48,39 @@ type ContributionResponse = {
   };
 };
 
-const getContributionCalendar = async (
+type Contributions = {
+  contributions: ContributionDay[][];
+  totalContributions: number;
+  totalMessage: string;
+  maxContributionDay: ContributionDay;
+  toJson: (options?: { flat?: boolean }) => string;
+  toTerm: (
+    options?: {
+      noTotal?: boolean;
+      noLegend?: boolean;
+      scheme?: string;
+      pixel?: string;
+      invert?: boolean;
+    },
+  ) => string;
+  toText: (options?: { noTotal?: boolean }) => string;
+  toSvg: (
+    options?: {
+      noTotal?: boolean;
+      noLegend?: boolean;
+      scheme?: string;
+      fontColor?: string;
+      frame?: string;
+      bg?: string;
+    },
+  ) => string;
+};
+
+async function getContributionCalendar(
   userName: string,
   token: string,
   contributionOptions: ContributionOptions = {},
-) => {
+): Promise<{ contributions: ContributionDay[][]; totalContributions: number }> {
   if (!userName || !token) {
     throw new Error("Missing required arguments");
   }
@@ -105,26 +136,31 @@ const getContributionCalendar = async (
   const contributions = weeks.map((week) => week.contributionDays);
 
   return { contributions, totalContributions };
-};
+}
 
-const totalMsg = (
+/** Generates a summary message for the given contribution count and optional date range. */
+function totalMsg(
   totalNum: number,
   { from, to }: { from?: string; to?: string } = {},
-): string => {
+): string {
   const parts = [`${totalNum} contributions`];
   if (from) parts.push(`from ${from}`);
   if (to) parts.push(`to ${to}`);
   if (!from && !to) parts.push("in the last year");
   return parts.join(" ");
-};
+}
 
-const moreContributionDay = (a: ContributionDay, b: ContributionDay) =>
-  a.contributionCount > b.contributionCount ? a : b;
+function moreContributionDay(
+  a: ContributionDay,
+  b: ContributionDay,
+): ContributionDay {
+  return a.contributionCount > b.contributionCount ? a : b;
+}
 
-const getMaxContributionDay = (
+function getMaxContributionDay(
   contributions: ContributionDay[][],
-): ContributionDay =>
-  contributions.reduce(
+): ContributionDay {
+  return contributions.reduce(
     (max, week) =>
       moreContributionDay(
         max,
@@ -135,20 +171,22 @@ const getMaxContributionDay = (
       ),
     contributions[0][0],
   );
+}
 
-const contributionsToJson = (
+function contributionsToJson(
   contributions: ContributionDay[][],
   totalContributions: number,
   {
     flat = false,
   } = {},
-) =>
-  JSON.stringify({
+): string {
+  return JSON.stringify({
     contributions: flat ? contributions.flat() : contributions,
     totalContributions,
   });
+}
 
-const contributionsToTerm = (
+function contributionsToTerm(
   contributions: ContributionDay[][],
   totalMessage: string,
   {
@@ -158,11 +196,11 @@ const contributionsToTerm = (
     pixel = "■",
     invert = false,
   } = {},
-) => {
+): string {
   const pixelWidth = stringWidth(pixel);
   if (pixelWidth > 2) {
     // width == 2 is ok
-    // like as "[]", "草", " "
+    // like as "[]", "草", " "
     throw new Error(`Pixel '${pixel}' is too long. Max width of pixel is 2.`);
   }
 
@@ -196,16 +234,16 @@ const contributionsToTerm = (
         acc + contributions.map((row) => grass(row[i])).join("") + "\n",
       "",
     ) + legend;
-};
+}
 
-const contributionsToText = (
+function contributionsToText(
   contributions: ContributionDay[][],
   totalMessage: string,
   maxContributionDay: ContributionDay,
   {
     noTotal = false,
   } = {},
-) => {
+): string {
   const total = !noTotal ? `${totalMessage}\n` : "";
 
   const pad = String(maxContributionDay.contributionCount).length;
@@ -219,9 +257,9 @@ const contributionsToText = (
         "\n",
       "",
     );
-};
+}
 
-const contributionsToSvg = (
+function contributionsToSvg(
   contributions: ContributionDay[][],
   totalMessage: string,
   {
@@ -232,7 +270,7 @@ const contributionsToSvg = (
     frame = "none",
     bg = "none",
   } = {},
-): string => {
+): string {
   const svgID = "deno-github-contributions-graph";
   const rectSize = 10;
   const rectSpan = 3;
@@ -288,7 +326,7 @@ const contributionsToSvg = (
       date = "",
       contributionCount = 0,
     }): string =>
-      contributionLevel == null ? "" : h("rect", {
+      contributionLevel === null ? "" : h("rect", {
         class: `pixel ${contributionLevel}`,
         x: x * rectStep,
         y: y * rectStep,
@@ -361,13 +399,14 @@ const contributionsToSvg = (
       ),
     );
   }
-};
+}
 
-const getContributions = async (
+/** Fetches GitHub contributions data for the given user and returns structured contribution info. */
+async function getContributions(
   userName: string,
   token: string,
   contributionOptions: ContributionOptions = {},
-) => {
+): Promise<Contributions> {
   const { from, to } = contributionOptions;
   const { contributions, totalContributions } = await getContributionCalendar(
     userName,
@@ -439,7 +478,7 @@ const getContributions = async (
     toText,
     toSvg,
   };
-};
+}
 
 export {
   CONTRIBUTION_LEVELS,
@@ -460,4 +499,5 @@ export type {
   ContributionLevelName,
   ContributionOptions,
   ContributionResponse,
+  Contributions,
 };

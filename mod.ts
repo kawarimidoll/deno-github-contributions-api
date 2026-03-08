@@ -1,4 +1,3 @@
-// constants and functions
 export {
   CONTRIBUTION_LEVELS,
   getContributions,
@@ -7,16 +6,10 @@ export {
 
 export { COLOR_SCHEMES, getColorScheme } from "./color_scheme.ts";
 
-export {
-  confirmHex,
-  convertToSixChars,
-  hexStrToHexNum,
-} from "./utils.ts";
-
-// types and interfaces
 export type {
   ContributionDay,
   ContributionLevelName,
+  Contributions,
 } from "./contributions.ts";
 
 export type { ColorSchemeName } from "./color_scheme.ts";
