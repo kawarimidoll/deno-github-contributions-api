@@ -16,7 +16,8 @@ jobs:
     name: Update Deno dependencies
     runs-on: ubuntu-latest
     permissions:
-      contents: write # to commit and push updated dependencies
+      contents: write # to create branch and push
+      pull-requests: write # to create PR
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -26,7 +27,7 @@ jobs:
         run: deno outdated --update
       - name: Run CI checks
         run: deno task ci
-      - name: Commit and push changes
+      - name: Create pull request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -34,5 +35,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git diff --staged --quiet || git commit -m "chore(deps): update deno dependencies"
-          git push
+          if git diff --staged --quiet; then
+            echo "No dependency updates found"
+            exit 0
+          fi
+          branch="chore/update-deps-$(date +%Y%m%d)"
+          git checkout -b "$branch"
+          git commit -m "chore(deps): update deno dependencies"
+          git push -u origin "$branch"
+          gh pr create --title "chore(deps): update deno dependencies" --body "Automated dependency update by GitHub Actions."
