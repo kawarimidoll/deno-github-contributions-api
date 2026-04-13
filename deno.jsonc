@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "exports": "./mod.ts",
   "imports": {
-    "@std/assert": "jsr:@std/assert@^1.0.0",
-    "@std/fmt/colors": "jsr:@std/fmt@^1.0.0/colors",
-    "@kawarimidoll/markup-tag": "jsr:@kawarimidoll/markup-tag@^1.0.0",
-    "string-width": "npm:string-width@^5.0.0",
-    "outdent": "jsr:@okikio/undent@^0.2.0"
+    "@std/assert": "jsr:@std/assert@^1.0.19",
+    "@std/fmt/colors": "jsr:@std/fmt@^1.0.9/colors",
+    "@kawarimidoll/markup-tag": "jsr:@kawarimidoll/markup-tag@^1.0.1",
+    "string-width": "npm:string-width@^5.1.2",
+    "outdent": "jsr:@okikio/undent@^0.2.1"
   },
   "tasks": {
     // common permissions
