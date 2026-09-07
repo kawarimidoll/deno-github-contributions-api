@@ -1,4 +1,4 @@
-const baseUrl = "https://github-contributions-api.deno.dev";
+const baseUrl = "https://github-contributions-api.kawarimidoll.deno.net";
 
 async function check(label: string, path: string) {
   console.log(label);

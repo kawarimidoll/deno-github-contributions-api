@@ -3,7 +3,7 @@
 [![JSR](https://jsr.io/badges/@kawarimidoll/github-contributions-api)](https://jsr.io/@kawarimidoll/github-contributions-api)
 [![JSR Score](https://jsr.io/badges/@kawarimidoll/github-contributions-api/score)](https://jsr.io/@kawarimidoll/github-contributions-api)
 [![ci](https://github.com/kawarimidoll/deno-github-contributions-api/workflows/ci/badge.svg)](.github/workflows/ci.yml)
-[![deno deploy](https://img.shields.io/badge/deno-deploy-blue?logo=deno)](https://github-contributions-api.deno.dev)
+[![deno deploy](https://img.shields.io/badge/deno-deploy-blue?logo=deno)](https://github-contributions-api.kawarimidoll.deno.net)
 [![LICENSE](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
 
 Fetch and render GitHub contributions data as JSON, SVG, terminal text, or plain
@@ -18,12 +18,12 @@ text.
 In your terminal:
 
 ```
-$ curl https://github-contributions-api.deno.dev
+$ curl https://github-contributions-api.kawarimidoll.deno.net
 # Then follow the messages...
 ```
 
 Of course, you can access the endpoint from the web browser:
-https://github-contributions-api.deno.dev
+https://github-contributions-api.kawarimidoll.deno.net
 
 ### As a library
 
